@@ -5,7 +5,7 @@ import Link from "next/link";
 const Login = () => {
   return (
     <div className="bg-gradient-to-t from-yellow to-strawberry h-[100vh] flex flex-col items-center p-10">
-      <h1 className="text-4xl font-bold sm:text-8xl text-center mb-20">
+      <h1 className="text-4xl font-bold sm:text-8xl text-center mb-20 text-white">
         Welcome to Shelph
       </h1>
 

@@ -11,7 +11,7 @@ export default function Home() {
 
   return (
     <div className="bg-gradient-to-t from-yellow to-strawberry h-[100vh] flex flex-col items-center pt-80">
-      <h1 className="text-7xl font-bold sm:text-9xl text-center mb-20">
+      <h1 className="text-7xl font-bold sm:text-9xl text-center mb-20 text-white">
         <Link href='/login'>
           Shelph
         </Link>

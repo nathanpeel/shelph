@@ -22,7 +22,6 @@ const config: Config = {
         strawberry: '#FC7E7E',
         violet: '#150D75'
       },
-      
     },
   },
   plugins: [],

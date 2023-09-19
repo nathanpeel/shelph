@@ -2,7 +2,7 @@ import './globals.css'
 import type { Metadata } from 'next'
 import { Lato } from 'next/font/google'
 
-const lato = Lato({ weight: '400', subsets: ['latin'] })
+const lato = Lato({ weight: ['100', '300', '400', '700', '900'], subsets: ['latin'] })
 
 export const metadata: Metadata = {
   title: 'Shelph',
@@ -20,3 +20,4 @@ export default function RootLayout({
     </html>
   )
 }
+ 

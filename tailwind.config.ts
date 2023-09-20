@@ -20,7 +20,8 @@ const config: Config = {
         white: '#FBFBFB',
         yellow: '#F1F678',
         strawberry: '#FC7E7E',
-        violet: '#150D75'
+        violet: '#150D75',
+        gray: '#D9D9D9'
       },
     },
   },

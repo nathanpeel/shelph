@@ -27,7 +27,7 @@ const Navbar = ({current}: props) => {
       icon = '/settings.svg'
     }
 
-    let classFrame = "flex items-center md:gap-3 gap-1 sm:border-b-2 sm:p-1 px-10";
+    let classFrame = "flex items-center md:gap-3 gap-1 sm:border-b-2 sm:p-1 px-7";
     let className =
       el === current
         ? classFrame += ' opacity-60'

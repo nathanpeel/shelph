@@ -27,7 +27,7 @@ const Navbar = ({current}: props) => {
       icon = '/settings.svg'
     }
 
-    let classFrame = "flex items-center sm:gap-3 sm:border-b-2 sm:p-1 px-10";
+    let classFrame = "flex items-center md:gap-3 gap-1 sm:border-b-2 sm:p-1 px-10";
     let className =
       el === current
         ? classFrame += ' opacity-60'
@@ -56,7 +56,7 @@ const Navbar = ({current}: props) => {
           Grow your mind
         </p>
       </div>
-        <div className="bg-sky text-white md:text-lg text-md flex lg:gap-36 md:gap-10 sm:gap-3 rounded-full sm:px-8 py-3 px-10 lg:mr-[65px] md:mr-[28px]">
+        <div className="bg-sky text-white md:text-lg text-md flex lg:gap-36 md:gap-9 sm:gap-5 rounded-full sm:px-8 py-3 px-10 lg:mr-[65px] sm:mr-[28px]">
           {navbarButtons}
       </div>
       <Link className="self-start" href="/login">

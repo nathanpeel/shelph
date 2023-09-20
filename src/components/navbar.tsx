@@ -56,7 +56,7 @@ const Navbar = ({current}: props) => {
           Grow your mind
         </p>
       </div>
-        <div className="bg-sky text-white md:text-lg text-md flex lg:gap-40 md:gap-10 sm:gap-3 rounded-full sm:px-8 py-3 px-10">
+        <div className="bg-sky text-white md:text-lg text-md flex lg:gap-36 md:gap-10 sm:gap-3 rounded-full sm:px-8 py-3 px-10 lg:mr-[65px] md:mr-[28px]">
           {navbarButtons}
       </div>
       <Link className="self-start" href="/login">

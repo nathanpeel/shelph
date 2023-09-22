@@ -5,7 +5,7 @@ export type newBookForm = {
   category: {
     [key: string]: boolean
   },
-  rating: null | number,
+  rating: number,
   totalPageCount: number,
   currentPageCount: number, 
   startDate: string, 

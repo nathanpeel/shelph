@@ -6,22 +6,24 @@ import { newBookForm } from "../types";
 
 const NewBookButton = () => {
   const date = new Date(Date.now());
+  const formatedDate = `${date.getFullYear()}-${
+      (date.getMonth() + 1 < 10 ? "0" : "") + (date.getMonth() + 1)
+    }-${date.getDate()}`
+
   const [currentPage, setCurrentPage] = useState(0);
   const defaultForm: newBookForm = {
     title: "",
     author: "",
     series: "",
     category: {
-      'fantasy': false,
-      'summer reading list': false
+      fantasy: false,
+      "summer reading list": false,
     },
-    rating: null,
+    rating: 0,
     totalPageCount: 0,
     currentPageCount: 0,
-    startDate: `${date.getFullYear()}-${date.getMonth() + 1}-${date.getDate()}`,
-    finishDate: `${date.getFullYear()}-${
-      date.getMonth() + 1
-    }-${date.getDate()}`,
+    startDate: formatedDate,
+    finishDate: formatedDate,
   };
 
   const [form, setForm] = useState(defaultForm);
@@ -34,19 +36,18 @@ const NewBookButton = () => {
     setIsOpen(true);
   };
 
-    const handleCloseModal = () => {
-      document.body.style.overflow = "visible";
-      setIsOpen(false);
-      setCurrentPage(0);
-      setForm(defaultForm);
-    };
+  const handleCloseModal = () => {
+    document.body.style.overflow = "visible";
+    setIsOpen(false);
+    setCurrentPage(0);
+    setForm(defaultForm);
+  };
 
   const changePage = () => {
     if (currentPage >= 4) {
       console.log(form);
       handleCloseModal();
-    }
-    else setCurrentPage(currentPage + 1);
+    } else setCurrentPage(currentPage + 1);
   };
 
   /*arguments for InputField: 
@@ -59,6 +60,16 @@ const NewBookButton = () => {
   onNextButtonClick,
   */
   
+  const nextButton = (text: string): React.ReactElement => {
+    return (
+      <button
+        className="sm:px-4 sm:py-2 bg-sky text-white px-3 py-1 rounded-xl mt-4"
+        onClick={changePage}>
+        {text}
+      </button>
+    );
+  }
+
   const pagesArray: React.ReactElement[] = [
     <div key="titleAndAuthor">
       <InputField
@@ -75,7 +86,7 @@ const NewBookButton = () => {
         formKey="author"
         setForm={setForm}
       />
-      <button onClick={changePage}>Next</button>
+      {nextButton("Next")}
     </div>,
     <div key="seriesAndCategory">
       <InputField
@@ -84,7 +95,13 @@ const NewBookButton = () => {
         form={form}
         formKey="series"
         setForm={setForm}
-        options={["Berserk", "Dune", "Monster", "The Gentleman Bastards"]}
+        options={[
+          "None",
+          "Berserk",
+          "Dune",
+          "Monster",
+          "The Gentleman Bastards",
+        ]}
       />
       <InputField
         label="Select categories"
@@ -94,11 +111,17 @@ const NewBookButton = () => {
         setForm={setForm}
         options={Object.keys(form.category)}
       />
-      <button onClick={changePage}>Next</button>
+      {nextButton("Next")}
     </div>,
     <div key="ratingPage">
-      Rating
-      <button onClick={changePage}>Next</button>
+      <InputField
+        label='Rate the book'
+        type='stars'
+        form={form}
+        formKey='rating'
+        setForm={setForm}
+      />
+      {nextButton("Next")}
     </div>,
     <div key="pageCountPage">
       <InputField
@@ -115,13 +138,28 @@ const NewBookButton = () => {
         formKey="currentPageCount"
         setForm={setForm}
       />
-      {form.totalPageCount < form.currentPageCount ? <p>total page count cannot be less than current page count</p> :
-        <button onClick={changePage}>Next</button>
-      }
+      {Number(form.totalPageCount) < Number(form.currentPageCount) ? (
+        <p>total page count cannot be less than current page count</p>
+      ) : (
+        nextButton("Next")
+      )}
     </div>,
     <div key="datePage">
-      <p>Select dates</p>
-      <button onClick={changePage}>Create Book</button>
+      <InputField
+        label="Please select a start date"
+        type="date"
+        form={form}
+        formKey="startDate"
+        setForm={setForm}
+      />
+      <InputField
+        label="Please select a finish date if applicale"
+        type="date"
+        form={form}
+        formKey="finishDate"
+        setForm={setForm}
+      />
+      {nextButton("Create book")}
     </div>,
   ];
 
@@ -133,11 +171,12 @@ const NewBookButton = () => {
         New book
       </button>
       <Modal isOpen={isOpen}>
-        <div className="bg-white opacity-100 sm:w-[60vw] md:w-[700px] w-[80vw] text-black rounded-xl flex flex-col items-center p-3">
+        <div className="bg-white opacity-100 sm:w-[60vw] md:w-[700px] w-[80vw] text-black rounded-xl flex flex-col items-center p-3 relative">
           <button
             onClick={() => {
               handleCloseModal();
-            }}>
+            }}
+            className="absolute top-3 right-3 rounded-full border-2 shadow-xl py-1 px-2 text-red-600 text-xs">
             X
           </button>
           <p className="text-2xl">Enter the Book Details</p>

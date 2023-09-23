@@ -50,6 +50,12 @@ const NewBookButton = () => {
     } else setCurrentPage(currentPage + 1);
   };
 
+  const prevPage = () => {
+    if (currentPage > 0) {
+      setCurrentPage(currentPage - 1);
+    } 
+  }
+
   /*arguments for InputField: 
   label,
   type,
@@ -60,7 +66,18 @@ const NewBookButton = () => {
   onNextButtonClick,
   */
   
-  const nextButton = (text: string): React.ReactElement => {
+  const pageButton = (text: string): React.ReactElement => {
+
+    if (text === 'Back') {
+      return (
+        <button
+          className="sm:px-4 sm:py-2 bg-gray text-black px-3 py-1 rounded-xl mt-4"
+          onClick={prevPage}>
+          {text}
+        </button>
+      );
+    }
+
     return (
       <button
         className="sm:px-4 sm:py-2 bg-sky text-white px-3 py-1 rounded-xl mt-4"
@@ -86,9 +103,10 @@ const NewBookButton = () => {
         formKey="author"
         setForm={setForm}
       />
-      {nextButton("Next")}
+      <div className="flex justify-center">{pageButton("Next")}</div>
     </div>,
     <div key="seriesAndCategory">
+      <p className="mt-1 mb-[-20px] text-sky">Both are optional</p>
       <InputField
         label="Select a series"
         type="select"
@@ -111,17 +129,23 @@ const NewBookButton = () => {
         setForm={setForm}
         options={Object.keys(form.category)}
       />
-      {nextButton("Next")}
+      <div className="flex gap-5 items-center justify-center">
+        {pageButton("Back")}
+        {pageButton("Next")}
+      </div>
     </div>,
     <div key="ratingPage">
       <InputField
-        label='Rate the book'
-        type='stars'
+        label="Rate the book"
+        type="stars"
         form={form}
-        formKey='rating'
+        formKey="rating"
         setForm={setForm}
       />
-      {nextButton("Next")}
+      <div className="flex gap-5 items-center justify-center">
+        {pageButton("Back")}
+        {pageButton("Next")}
+      </div>
     </div>,
     <div key="pageCountPage">
       <InputField
@@ -138,11 +162,16 @@ const NewBookButton = () => {
         formKey="currentPageCount"
         setForm={setForm}
       />
-      {Number(form.totalPageCount) < Number(form.currentPageCount) ? (
-        <p>total page count cannot be less than current page count</p>
-      ) : (
-        nextButton("Next")
-      )}
+      <div className="flex gap-5 items-center justify-center relative">
+        {pageButton("Back")}
+        {Number(form.totalPageCount) < Number(form.currentPageCount) ? (
+          <p className="text-red-600 text-sm absolute bottom-11">
+            total page count cannot be less than current page count
+          </p>
+        ) : (
+          pageButton("Next")
+        )}
+      </div>
     </div>,
     <div key="datePage">
       <InputField
@@ -159,7 +188,10 @@ const NewBookButton = () => {
         formKey="finishDate"
         setForm={setForm}
       />
-      {nextButton("Create book")}
+      <div className="flex gap-5 items-center justify-center">
+        {pageButton("Back")}
+        {pageButton("Create book")}
+      </div>
     </div>,
   ];
 

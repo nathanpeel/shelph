@@ -1,3 +1,5 @@
+'use client'
+
 import React, {
   ChangeEvent,
   MouseEventHandler,
@@ -7,6 +9,13 @@ import React, {
 } from "react";
 import { newBookForm } from "@/app/types";
 import Image from "next/image";
+import { useAppDispatch, useAppSelector } from "../../lib/redux/hooks";
+import { updateTitle, updateAuthor, updateSeries, updateStartDate, updateFinishDate, updateRating, updateTotalPageCount, updateCurrentPageCount, updateCateogry, loadCategories} from '../../lib/redux/slices/newBookSlice';
+/*
+---reducers---
+updateTitle, updateAuthor, updateSeries, updateCateogry, loadCategories, updateRating, updateTotalPageCount, updateCurrentPageCount, updateStartDate, updateFinishDate, resetForm 
+
+*/
 
 type props = {
   label: string;
@@ -14,8 +23,20 @@ type props = {
   options?: string[];
   form: newBookForm;
   formKey: string;
-  setForm: Dispatch<SetStateAction<newBookForm>>;
 };
+
+//function that returns the correct reducer
+const getReducer = (formKey: string) => {
+  if (formKey === 'title') return updateTitle;
+  if (formKey === 'author') return updateAuthor;
+  if (formKey === 'series') return updateSeries;
+  if (formKey === 'startDate') return updateStartDate;
+  if (formKey === 'finishDate') return updateFinishDate;
+  if (formKey === 'rating') return updateRating;
+  if (formKey === 'totalPageCount') return updateTotalPageCount;
+  if (formKey === 'currentPageCount') return updateCurrentPageCount;
+  else throw new Error('Invalid reducer selector inputed: getReducer in inputField.tsx')
+}
 
 const InputField = ({
   label,
@@ -23,7 +44,6 @@ const InputField = ({
   options,
   form,
   formKey,
-  setForm,
 }: props) => {
   const checkBoxesObject: {
     [key: string]: boolean;
@@ -31,29 +51,10 @@ const InputField = ({
   const [checkboxes, setCheckBoxes] = useState(checkBoxesObject);
   const [newCat, setNewCat] = useState("");
 
-  //---Renders a text/number input---//
-  if (type === "text" || type === "number" || type === "date") {
-    const formValue = form[formKey as keyof newBookForm];
-    if (typeof formValue !== "string" && typeof formValue !== "number") {
-      throw new Error(
-        "The passed in key does not match the passed in type: inputField"
-      );
-    }
+  const dispatch = useAppDispatch();
+  const state = useAppSelector(state => state.newBook);
+  const reducer = getReducer(formKey);
 
-    return (
-      <div className="my-4">
-        <label className="text-lg">{label}</label>
-        <input
-          type={type}
-          value={formValue}
-          onChange={(e: ChangeEvent<HTMLInputElement>) => {
-            setForm({ ...form, [formKey]: e.target.value });
-          }}
-          className="hover:border-black focus:border-sky focus:outline-none border-2 border-transparent shadow-lg rounded-xl w-[100%] h-10"
-        />
-      </div>
-    );
-  }
 
   //---Renders a checkbox input based on the passed in options---//
   if (type === "checkbox") {
@@ -80,10 +81,7 @@ const InputField = ({
               onChange={(e) => {
                 const { name, checked } = e.target;
                 setCheckBoxes({ ...checkboxes, [index]: checked });
-                setForm({
-                  ...form,
-                  [formKey]: { ...formValue, [el]: checked },
-                });
+                dispatch(updateCateogry(el));
               }}
             />
             <label>{el}</label>
@@ -101,11 +99,8 @@ const InputField = ({
           />
           <button
             onClick={() => {
+              dispatch(loadCategories([newCat]));
               setNewCat('');
-              setForm({
-                ...form,
-                [formKey]: { ...formValue, [newCat]: false }
-              });
             }}
             className=" bg-orange text-white px-3 py-1 rounded-xl mt-1 text-sm">
             Add
@@ -135,7 +130,7 @@ const InputField = ({
           className="border-2 border-black rounded-full p-2"
           value={formValue}
           onChange={(e) => {
-            setForm({ ...form, [formKey]: e.target.value });
+            
           }}>
           {options.map((el) => (
             <option value={el} key={crypto.randomUUID()}>

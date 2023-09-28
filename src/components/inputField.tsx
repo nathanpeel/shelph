@@ -21,8 +21,6 @@ type props = {
   label: string;
   type: string;
   options?: string[];
-  form: newBookForm;
-  formKey: string;
 };
 
 //function that returns the correct reducer
@@ -42,45 +40,29 @@ const InputField = ({
   label,
   type,
   options,
-  form,
-  formKey,
 }: props) => {
   const checkBoxesObject: {
     [key: string]: boolean;
   } = {};
-  const [checkboxes, setCheckBoxes] = useState(checkBoxesObject);
   const [newCat, setNewCat] = useState("");
 
   const dispatch = useAppDispatch();
   const state = useAppSelector(state => state.newBook);
-  const reducer = getReducer(formKey);
 
 
   //---Renders a checkbox input based on the passed in options---//
   if (type === "checkbox") {
-    if (!options)
-      throw new Error(
-        "Options must be provided if the checkbox type is selected: inputField"
-      );
-    // options.forEach((el, index) => {
-    //   setCheckBoxes({...checkboxes, [index]: false});
-    // })
-    const formValue = form[formKey as keyof newBookForm];
-    if (typeof formValue !== "object")
-      throw new Error("formKey does not match checkbox input: inputField");
 
     return (
       <div>
         <label className="text-lg">{label}</label>
-        {options.map((el, index) => (
+        {Object.keys(state.category).map((el) => (
           <div key={crypto.randomUUID()} className="flex gap-3">
             <input
               type="checkbox"
               name={el}
-              checked={checkboxes[index]}
-              onChange={(e) => {
-                const { name, checked } = e.target;
-                setCheckBoxes({ ...checkboxes, [index]: checked });
+              checked={state.category[el]}
+              onChange={() => {
                 dispatch(updateCateogry(el));
               }}
             />
@@ -114,23 +96,16 @@ const InputField = ({
     if (!options)
       throw new Error(
         "Options must be provided if the select type is selected: inputField"
-      );
-
-    const formValue = form[formKey as keyof newBookForm];
-    if (typeof formValue !== "string" && typeof formValue !== "number") {
-      throw new Error(
-        "The passed in key does not match the passed in type: inputField"
-      );
-    }
+      ); 
 
     return (
       <div className="flex flex-col gap-1 my-4">
         <label className="text-lg">{label}</label>
         <select
           className="border-2 border-black rounded-full p-2"
-          value={formValue}
+          value={state.series}
           onChange={(e) => {
-            
+            dispatch(updateSeries(e.target.value));
           }}>
           {options.map((el) => (
             <option value={el} key={crypto.randomUUID()}>
@@ -143,37 +118,31 @@ const InputField = ({
   }
 
   if (type === "stars") {
-    const formValue = form[formKey as keyof newBookForm];
-    if (typeof formValue !== "number") {
-      throw new Error(
-        "The passed in key does not match the passed in type: inputField"
-      );
-    }
 
     const starsArray: React.ReactElement[] = [];
     for (let i = 1; i <= 5; i++) {
-      if (i <= formValue) {
+      if (i <= state.rating) {
         starsArray.push(
           <div
             className="relative md:w-8 md:h-8 w-6 h-6"
             key={crypto.randomUUID()}
             onClick={() => {
-              setForm({ ...form, [formKey]: i });
+              dispatch(updateRating(i))
             }}>
-            <Image src="/star.svg" fill alt="star" />
+            <Image src="/star.svg" sizes="" fill alt="star" />
           </div>
         );
       }
 
-      if (i > formValue) {
+      if (i > state.rating) {
         starsArray.push(
           <div
             className="relative md:w-8 md:h-8 w-6 h-6"
             key={crypto.randomUUID()}
             onClick={() => {
-              setForm({ ...form, [formKey]: i });
+              dispatch(updateRating(i))
             }}>
-            <Image src="/emptyStar.svg" fill alt="star" />
+            <Image src="/emptyStar.svg" sizes="" fill alt="star" />
           </div>
         );
       }
@@ -186,7 +155,7 @@ const InputField = ({
         <button
           className="sm:px-4 sm:py-2 bg-orange text-white px-3 py-1 rounded-xl mt-4"
           onClick={() => {
-            setForm({ ...form, [formKey]: 0 });
+            dispatch(updateRating(0))
           }}>
           No rating
         </button>

@@ -18,7 +18,7 @@ const Book = () => {
   for (let i = 0; i < 5; i++) {
     starsArray.push(
       <div className="relative md:w-8 md:h-8 w-5 h-5">
-        <Image src={i < stars ? '/star.svg' : '/emptyStar.svg'} fill alt='star'/>
+        <Image src={i < stars ? '/star.svg' : '/emptyStar.svg'} fill alt='star' sizes=""/>
       </div>
     )
   }
@@ -35,6 +35,8 @@ const Book = () => {
               alt={`Image of ${title} cover`}
               src={image}
               fill
+              sizes="1"
+              priority
             />
           ) : (
             ""

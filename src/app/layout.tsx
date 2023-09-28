@@ -17,15 +17,17 @@ export default function RootLayout({
 }) {
   return (
     <Providers>
-      <html lang="en">
-        <body className={lato.className}>
-          <main className='bg-white text-black overflow-hidden'>
+      <html lang="en" suppressHydrationWarning={true}>
+        <body className={lato.className} suppressHydrationWarning={true}>
+          <main className="bg-white text-black overflow-hidden">
             {children}
           </main>
-        <footer className='mt-[100px] mb-10 text-center bg-white'>Created by Nathan Peel</footer>
+          <footer className="mt-[100px] mb-10 text-center bg-white">
+            Created by Nathan Peel
+          </footer>
         </body>
       </html>
     </Providers>
-  )
+  );
 }
  

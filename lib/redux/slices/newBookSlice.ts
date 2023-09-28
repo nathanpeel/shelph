@@ -52,17 +52,17 @@ export const newBookSlice = createSlice({
       state.finishDate = action.payload;
     },
     resetForm: (state) => {
-      state = {
-        title: "",
-        author: "",
-        series: "",
-        category: {},
-        rating: 0,
-        totalPageCount: 0,
-        currentPageCount: 0,
-        startDate: '',
-        finishDate: '',
-      }
+      state.title = '';
+      state.author = '';
+      state.series = '';
+      state.rating = 0;
+      state.totalPageCount = 0;
+      state.currentPageCount = 0;
+      state.startDate = '';
+      state.finishDate = '';
+      Object.keys(state.category).forEach((key) => {
+        state.category[key] = false;
+      })
     }
   },
 });

@@ -3,36 +3,27 @@ import React, { use, useState, ChangeEvent } from "react";
 import Modal from "@/components/modal";
 import InputField from "@/components/inputField";
 import { newBookForm } from "../types";
+import { useAppDispatch, useAppSelector } from "../../../lib/redux/hooks";
+import {
+  updateTitle,
+  updateAuthor,
+  updateTotalPageCount,
+  updateCurrentPageCount,
+  updateStartDate,
+  updateFinishDate,
+  resetForm,
+} from "../../../lib/redux/slices/newBookSlice";
 
 const NewBookButton = () => {
-  const date = new Date(Date.now());
-  const formatedDate = `${date.getFullYear()}-${
-      (date.getMonth() + 1 < 10 ? "0" : "") + (date.getMonth() + 1)
-    }-${date.getDate()}`
-
   const [currentPage, setCurrentPage] = useState(0);
-  const defaultForm: newBookForm = {
-    title: "",
-    author: "",
-    series: "",
-    category: {
-      fantasy: false,
-      "summer reading list": false,
-    },
-    rating: 0,
-    totalPageCount: 0,
-    currentPageCount: 0,
-    startDate: formatedDate,
-    finishDate: formatedDate,
-  };
-
-  const [form, setForm] = useState(defaultForm);
-
   const [isOpen, setIsOpen] = useState(false);
+
+  const formState = useAppSelector((state) => state.newBook);
+  //load series and category data here
+  const dispatch = useAppDispatch();
 
   const handleClick = () => {
     document.body.style.overflow = "hidden";
-
     setIsOpen(true);
   };
 
@@ -40,12 +31,12 @@ const NewBookButton = () => {
     document.body.style.overflow = "visible";
     setIsOpen(false);
     setCurrentPage(0);
-    setForm(defaultForm);
+    dispatch(resetForm());
   };
 
   const changePage = () => {
     if (currentPage >= 4) {
-      console.log(form);
+      console.log(formState);
       handleCloseModal();
     } else setCurrentPage(currentPage + 1);
   };
@@ -53,22 +44,11 @@ const NewBookButton = () => {
   const prevPage = () => {
     if (currentPage > 0) {
       setCurrentPage(currentPage - 1);
-    } 
-  }
+    }
+  };
 
-  /*arguments for InputField: 
-  label,
-  type,
-  options,
-  form,
-  formKey,
-  setForm,
-  onNextButtonClick,
-  */
-  
   const pageButton = (text: string): React.ReactElement => {
-
-    if (text === 'Back') {
+    if (text === "Back") {
       return (
         <button
           className="sm:px-4 sm:py-2 bg-gray text-black px-3 py-1 rounded-xl mt-4"
@@ -85,34 +65,49 @@ const NewBookButton = () => {
         {text}
       </button>
     );
-  }
+  };
+
+
 
   const pagesArray: React.ReactElement[] = [
     <div key="titleAndAuthor">
-      <InputField
-        label="Book Title"
-        type="text"
-        form={form}
-        formKey="title"
-        setForm={setForm}
-      />
-      <InputField
-        label="Author"
-        type="text"
-        form={form}
-        formKey="author"
-        setForm={setForm}
-      />
-      <div className="flex justify-center">{pageButton("Next")}</div>
+      <div className="my-4">
+        <label className="text-lg">Book Title</label>
+        <input
+          type="text"
+          value={formState.title}
+          onChange={(e: ChangeEvent<HTMLInputElement>) => {
+            dispatch(updateTitle(e.target.value));
+          }}
+          className="hover:border-black focus:border-sky focus:outline-none border-2 border-transparent shadow-lg rounded-xl w-[100%] h-10"
+        />
+      </div>
+      <div className="my-4">
+        <label className="text-lg">Author</label>
+        <input
+          type="text"
+          value={formState.author}
+          onChange={(e: ChangeEvent<HTMLInputElement>) => {
+            dispatch(updateAuthor(e.target.value));
+          }}
+          className="hover:border-black focus:border-sky focus:outline-none border-2 border-transparent shadow-lg rounded-xl w-[100%] h-10"
+        />
+      </div>
+      <div className="flex justify-center relative">{
+      formState.title.length < 1 || formState.author.length < 1 ? (
+          <p className="text-red-600 text-sm mt-6 mb-3">
+            There must be a title and author
+          </p>
+        ) : (
+          pageButton("Next")
+        )
+      }</div>
     </div>,
     <div key="seriesAndCategory">
       <p className="mt-1 mb-[-20px] text-sky">Both are optional</p>
       <InputField
         label="Select a series"
         type="select"
-        form={form}
-        formKey="series"
-        setForm={setForm}
         options={[
           "None",
           "Berserk",
@@ -121,73 +116,84 @@ const NewBookButton = () => {
           "The Gentleman Bastards",
         ]}
       />
-      <InputField
-        label="Select categories"
-        type="checkbox"
-        form={form}
-        formKey="category"
-        setForm={setForm}
-        options={Object.keys(form.category)}
-      />
+      <InputField label="Select categories" type="checkbox" />
       <div className="flex gap-5 items-center justify-center">
         {pageButton("Back")}
         {pageButton("Next")}
       </div>
     </div>,
     <div key="ratingPage">
-      <InputField
-        label="Rate the book"
-        type="stars"
-        form={form}
-        formKey="rating"
-        setForm={setForm}
-      />
+      <InputField label="Rate the book" type="stars" />
       <div className="flex gap-5 items-center justify-center">
         {pageButton("Back")}
         {pageButton("Next")}
       </div>
     </div>,
     <div key="pageCountPage">
-      <InputField
-        label="Enter the book's page count"
-        type="number"
-        form={form}
-        formKey="totalPageCount"
-        setForm={setForm}
-      />
-      <InputField
-        label="How many pages are you into this book?"
-        type="number"
-        form={form}
-        formKey="currentPageCount"
-        setForm={setForm}
-      />
+      <div className="my-4">
+        <label className="text-lg">{`Enter the book's total page count`}</label>
+        <input
+          type="number"
+          onChange={(e: ChangeEvent<HTMLInputElement>) => {
+            dispatch(updateTotalPageCount(Number(e.target.value)));
+          }}
+          className="hover:border-black focus:border-sky focus:outline-none border-2 border-transparent shadow-lg rounded-xl w-[100%] h-10"
+        />
+      </div>
+      <div className="my-4">
+        <label className="text-lg">
+          How many pages are you into this book?
+        </label>
+        <input
+          type="number"
+          onChange={(e: ChangeEvent<HTMLInputElement>) => {
+            dispatch(updateCurrentPageCount(Number(e.target.value)));
+          }}
+          className="hover:border-black focus:border-sky focus:outline-none border-2 border-transparent shadow-lg rounded-xl w-[100%] h-10"
+        />
+      </div>
       <div className="flex gap-5 items-center justify-center relative">
         {pageButton("Back")}
-        {Number(form.totalPageCount) < Number(form.currentPageCount) ? (
+        {Number(formState.totalPageCount) <
+        Number(formState.currentPageCount) ? (
           <p className="text-red-600 text-sm absolute bottom-11">
             total page count cannot be less than current page count
           </p>
         ) : (
+          formState.totalPageCount < 1 ? (
+          <p className="text-red-600 text-sm absolute bottom-11">
+            Please enter a total page count to continue
+          </p>
+        ) :
           pageButton("Next")
         )}
       </div>
     </div>,
     <div key="datePage">
-      <InputField
-        label="Please select a start date"
-        type="date"
-        form={form}
-        formKey="startDate"
-        setForm={setForm}
-      />
-      <InputField
-        label="Please select a finish date if applicale"
-        type="date"
-        form={form}
-        formKey="finishDate"
-        setForm={setForm}
-      />
+      <div className="my-4">
+        <label className="text-lg">Please select a start date</label>
+        <input
+          type="date"
+          value={formState.startDate}
+          onChange={(e: ChangeEvent<HTMLInputElement>) => {
+            dispatch(updateStartDate(e.target.value));
+          }}
+          className="hover:border-black focus:border-sky focus:outline-none border-2 border-transparent shadow-lg rounded-xl w-[100%] h-10"
+        />
+      </div>
+      <div className="my-4">
+        <label className="text-lg">
+          Please select a finish date if applicable
+        </label>
+        <input
+          type="date"
+          value={formState.finishDate}
+          onChange={(e: ChangeEvent<HTMLInputElement>) => {
+            dispatch(updateFinishDate(e.target.value));
+          }}
+          className="hover:border-black focus:border-sky focus:outline-none border-2 border-transparent shadow-lg rounded-xl w-[100%] h-10"
+        />
+      </div>
       <div className="flex gap-5 items-center justify-center">
         {pageButton("Back")}
         {pageButton("Create book")}

@@ -1,8 +1,7 @@
 "use client";
-import React, { use, useState, ChangeEvent } from "react";
+import React, { useState, ChangeEvent } from "react";
 import Modal from "@/components/modal";
 import InputField from "@/components/inputField";
-import { newBookForm } from "../types";
 import { useAppDispatch, useAppSelector } from "../../../lib/redux/hooks";
 import {
   updateTitle,
@@ -17,9 +16,11 @@ import {
 const NewBookButton = () => {
   const [currentPage, setCurrentPage] = useState(0);
   const [isOpen, setIsOpen] = useState(false);
-
+  
   const formState = useAppSelector((state) => state.newBook);
   //load series and category data here
+  const seriesData = useAppSelector((state) => state.userLibrary.series);
+
   const dispatch = useAppDispatch();
 
   const handleClick = () => {
@@ -108,13 +109,7 @@ const NewBookButton = () => {
       <InputField
         label="Select a series"
         type="select"
-        options={[
-          "None",
-          "Berserk",
-          "Dune",
-          "Monster",
-          "The Gentleman Bastards",
-        ]}
+        options={seriesData}
       />
       <InputField label="Select categories" type="checkbox" />
       <div className="flex gap-5 items-center justify-center">

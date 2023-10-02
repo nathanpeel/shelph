@@ -49,7 +49,6 @@ const InputField = ({
   const dispatch = useAppDispatch();
   const state = useAppSelector(state => state.newBook);
 
-
   //---Renders a checkbox input based on the passed in options---//
   if (type === "checkbox") {
 

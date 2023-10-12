@@ -1,13 +1,12 @@
-import React, { useContext, useEffect } from "react";
 import Navbar from "@/components/navbar";
-import Book from "@/components/book";
 import NewBookButton from "./NewBookButton";
 import BookList from "./BookList";
+import { ReactElement } from "react";
 
 
 
 
-const Library = () => {
+const Library = (): ReactElement => {
 
   return (
     <div>

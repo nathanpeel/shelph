@@ -1,9 +1,9 @@
 "use client";
-import React, { ReactElement, useEffect, useState } from "react";
+import React, { ReactElement, useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 
-const NewUser = () => {
+const NewUser = (): ReactElement => {
   const [newUserForm, setNewUsetForm] = useState({
     email: "",
     passwordOne: "",
@@ -11,7 +11,7 @@ const NewUser = () => {
   });
   const router = useRouter();
 
-  const validateForm = () => {
+  const validateForm = (): ReactElement => {
     //this function returns the correct button/text to render based on the state of the form
 
     const notValid = (message: string = "Invalid Information"): ReactElement => (

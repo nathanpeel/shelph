@@ -23,27 +23,11 @@ type props = {
   options?: string[];
 };
 
-//function that returns the correct reducer
-const getReducer = (formKey: string) => {
-  if (formKey === 'title') return updateTitle;
-  if (formKey === 'author') return updateAuthor;
-  if (formKey === 'series') return updateSeries;
-  if (formKey === 'startDate') return updateStartDate;
-  if (formKey === 'finishDate') return updateFinishDate;
-  if (formKey === 'rating') return updateRating;
-  if (formKey === 'totalPageCount') return updateTotalPageCount;
-  if (formKey === 'currentPageCount') return updateCurrentPageCount;
-  else throw new Error('Invalid reducer selector inputed: getReducer in inputField.tsx')
-}
-
 const InputField = ({
   label,
   type,
   options,
 }: props) => {
-  const checkBoxesObject: {
-    [key: string]: boolean;
-  } = {};
   const [newCat, setNewCat] = useState("");
 
   const dispatch = useAppDispatch();
@@ -90,6 +74,7 @@ const InputField = ({
       </div>
     );
   }
+
   //---Renders a select input based on the passed in options---//
   if (type === "select") {
     if (!options)
@@ -116,6 +101,7 @@ const InputField = ({
     );
   }
 
+  //--Renders rating selector using stars--//
   if (type === "stars") {
 
     const starsArray: React.ReactElement[] = [];

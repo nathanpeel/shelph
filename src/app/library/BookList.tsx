@@ -1,5 +1,5 @@
 'use client'
-import React from 'react'
+import React, { ReactElement } from 'react'
 import Book from '@/components/book';
 import {
   loadBooks,
@@ -8,10 +8,12 @@ import {
 import { loadCategories} from '../../../lib/redux/slices/newBookSlice';
 import { useAppDispatch, useAppSelector} from '../../../lib/redux/hooks';
 
-const BookList = () => {
+const BookList = (): ReactElement => {
   const dispatch = useAppDispatch();
   //request data here -- Using mock data for now
-  dispatch(loadBooks([{bookId: 'sadfsdf'}, {bookId: 'asdfdsaf'}]));
+  dispatch(
+    loadBooks([{ _id: "sadfsdf" }, { _id: "asdfdsaf" }, { _id: "asdfddsaf" }])
+  );
   dispatch(loadCategories(["Summer reading", "Sci-Fi", "BookTube Recs"]));
   dispatch(loadSeries(["Berserk", "Monster", "The Lord of The Rings"]));
   const booksObject = useAppSelector(state => state.userLibrary.books);
@@ -25,4 +27,4 @@ const BookList = () => {
   );
 }
 
-export default BookList
+export default BookList;

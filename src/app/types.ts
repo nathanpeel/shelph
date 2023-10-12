@@ -1,5 +1,5 @@
 export type newBookForm = {
-  title: string, 
+  title: string,
   author: string,
   series: string,
   category: {
@@ -7,7 +7,20 @@ export type newBookForm = {
   },
   rating: number,
   totalPageCount: number,
-  currentPageCount: number, 
-  startDate: string, 
+  currentPageCount: number,
+  startDate: string,
   finishDate: string
+}
+
+export type Book = {
+  _id: string,
+  title: string,
+  author: string,
+  rating: number,
+  startDate: string,
+  finishDate: string,
+  currentPageCount: Number,
+  totalPageCount: number,
+  categories: string[],
+  series: string
 }

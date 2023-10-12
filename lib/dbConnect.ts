@@ -44,4 +44,5 @@ async function dbConnect() {
   return cached.conn;
 }
 
+//run this function in routes where connection to a database is needed. Use await.
 export default dbConnect;

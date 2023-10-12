@@ -1,8 +1,9 @@
 import { createSlice, type PayloadAction } from "@reduxjs/toolkit";
+import { Book } from "@/app/types";
 
 const initialState: {
   books: {
-    [key: string]: any
+    [key: string]: Book
   },
   categories: string[],
   series: string[]
@@ -12,7 +13,6 @@ const initialState: {
   series: []
 };
 
-//---UPDATE TYPES IN THIS FILE. DO NOT USE TYPE ANY---//
 
 export const userLibrarySlice = createSlice({
   name: 'userLibrary',
@@ -21,25 +21,27 @@ export const userLibrarySlice = createSlice({
     loadBooks: (state, action) => {
       console.log('loading books!')
       const loadedBooks: {
-        [key: string]: any
+        [key: string]: Book
       } = {};
-      action.payload.forEach((el: any) => {
-        loadedBooks[el.bookId] = el;
+      action.payload.forEach((el: Book) => {
+        loadedBooks[el._id] = el;
       })
       state.books = loadedBooks;
     },
+
     loadCategories: (state, action) => {
       console.log('loading categories!')
-      const loadedCats: any[] = [];
-      action.payload.forEach((el: any) => {
+      const loadedCats: string[] = [];
+      action.payload.forEach((el: string) => {
         loadedCats.push(el);
       })
       state.categories = loadedCats;
     },
+
     loadSeries: (state, action) => {
       console.log('loading series!')
-      const loadedSeries: any[] = [];
-      action.payload.forEach((el: any) => {
+      const loadedSeries: string[] = [];
+      action.payload.forEach((el: string) => {
         loadedSeries.push(el);
       })
       state.series = loadedSeries;

@@ -1,7 +1,7 @@
-import React from 'react'
+import React, { ReactElement } from 'react'
 import Navbar from '@/components/navbar'
 
-const dashboard = () => {
+const dashboard = (): ReactElement => {
   return (
     <div className='bg-white h-[100vh] text-black'>
       <Navbar current='Home'/>

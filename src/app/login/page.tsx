@@ -1,9 +1,9 @@
 "use client";
-import React, { useState } from "react";
+import React, { ReactElement, useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 
-const Login = () => {
+const Login = (): ReactElement => {
   const [loginInfo, setLoginInfo] = useState({
     username: "",
     password: "",

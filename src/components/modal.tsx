@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { ReactElement } from 'react'
 
 const Modal = ({
   children,
@@ -6,7 +6,7 @@ const Modal = ({
 }: {
   children: React.ReactElement;
   isOpen: boolean;
-}) => {
+}): ReactElement | null => {
   if (!isOpen) return null;
 
   return (

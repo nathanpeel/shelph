@@ -1,6 +1,18 @@
 import mongoose from "mongoose";
 
-export const bookSchema = new mongoose.Schema({
+export interface BookType extends mongoose.Document {
+  title: string,
+  author: string,
+  rating: number,
+  startDate: string,
+  finishDate: string,
+  currentPageCount: Number,
+  totalPageCount: number,
+  categories: string[],
+  series: string
+}
+
+export const bookSchema = new mongoose.Schema<BookType>({
   title: {
     type: String,
     required: [true, 'Book title is required'],

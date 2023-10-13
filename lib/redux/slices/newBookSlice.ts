@@ -58,6 +58,7 @@ export const newBookSlice = createSlice({
     resetForm: (state) => {
       state.title = '';
       state.author = '';
+      state.image = '';
       state.series = '';
       state.rating = 0;
       state.totalPageCount = 0;

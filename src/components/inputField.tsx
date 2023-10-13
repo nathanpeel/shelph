@@ -60,12 +60,12 @@ const InputField = ({
             onChange={(e) => {
               setNewCat(e.target.value);
             }}
-            className="hover:border-black focus:border-sky focus:outline-none border-2 border-transparent shadow-lg rounded-xl w-[100%] h-10"
+            className="hover:border-black focus:border-sky focus:outline-none border-2 shadow-lg rounded-xl w-[100%] h-10 border-gray"
           />
           <button
             onClick={() => {
               dispatch(loadCategories([newCat]));
-              setNewCat('');
+              setNewCat("");
             }}
             className=" bg-orange text-white px-3 py-1 rounded-xl mt-1 text-sm">
             Add

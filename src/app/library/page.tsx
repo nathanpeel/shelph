@@ -12,7 +12,6 @@ const getUserInfo = async () => {
   await dbConnect();
 
   const { userId } = auth();
-  console.log(userId);
   //search the database for that user
     //if that user exists, return the data for it
   const data = await userModel.findOne({ authId: userId }).exec()
@@ -25,14 +24,13 @@ const getUserInfo = async () => {
     const newUser = new userModel({ authId: userId });
     await newUser.save();
     const newData = await userModel.findOne({ authId: userId }).exec();
-    return newData
+  return newData;
 };
 
 const Library = async () => {
 
 
-  const data = await getUserInfo();
-  console.log(data)
+  await getUserInfo();
 
 
   return (

@@ -14,7 +14,7 @@ const BookList = () => {
       {Object.keys(booksObject).map((id) => {
         //pass the id into the book here
         return (
-          <Book key={crypto.randomUUID()} />
+          <Book key={crypto.randomUUID()} id={id} />
         )
       })}
     </div>

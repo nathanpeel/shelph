@@ -56,7 +56,7 @@ const NewBookButton = (): ReactElement => {
       })
       .then((data) => {
         console.log('Book added succesfully')
-        fetch("http://shelph.vercel.app/api/library")
+        fetch("https://shelph.vercel.app/api/library")
           .then((data) => {
             if (data.ok) {
               return data.json();

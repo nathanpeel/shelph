@@ -11,7 +11,7 @@ import BookList from './BookList';
 const BookListWrapper = (): ReactElement => {
   const dispatch = useAppDispatch();
 
-  fetch("http://shelph.vercel.app/api/library")
+  fetch("https://shelph.vercel.app/api/library")
     .then((data) => {
       if (data.ok) {
         return data.json();

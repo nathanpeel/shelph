@@ -15,7 +15,7 @@ export default function Page() {
         appearance={{
           elements: {
             formFieldInput:
-              "hover:border-black focus:border-sky focus:outline-none  border-2 border-gray shadow-lg rounded-xl w-[100%] h-10",
+              "hover:border-black focus:border-sky focus:outline-none border-2 border-gray shadow-lg rounded-xl w-[100%] h-10",
             formButtonPrimary:
               "sm:px-6 sm:py-3 bg-sky text-white px-5 py-2 rounded-xl",
           },

@@ -185,14 +185,47 @@ const NewBookButton = (): ReactElement => {
           />
         </div>
       ) : (
-        <div className="my-4 flex flex-col">
+        <div className="my-4 flex flex-col items-center sm:items-start">
           <p className="text-sky">Optional</p>
           <label className="text-lg">{"Upload an image"}</label>
           <input
             type="file"
-            onChange={(e: ChangeEvent<HTMLInputElement>) => {
+              onChange={(e: ChangeEvent<HTMLInputElement>) => {
+              
+                function getFileExtension(fileName: string): string {
+                  if (!fileName) return '';
+
+                  const string = fileName.split('.').pop()
+
+                  if (string) return '.' + string.toLowerCase();
+                  return '';
+                }
+
               //this converts an image into a DataURL to store in the database
               const input = e.target;
+              if (input.files) {
+                if (input.files.length > 0) {
+                  const fileSize = input.files[0].size;
+                  const fileName: string = input.files[0].name;
+                  const validExtensions = ['.jpg', '.jpeg', '.png', '.webp']
+
+                  const maxFileSize = 500 * 500;
+
+                  if (fileSize > maxFileSize) {
+                    alert(
+                      "Image is to large. Please select a smaller image or adjust the file size. "
+                    );
+                    e.target.value = '';
+                    return;
+                  }
+                  if (!validExtensions.includes(getFileExtension(fileName))) {
+                    alert('Invalid file type. Please select a .jpg, .jpeg, .png, or .webp file');
+                    e.target.value = '';
+                    return;
+                  }
+                }
+              }
+
               if (input.files && input.files[0]) {
                 const reader = new FileReader();
 
@@ -209,13 +242,12 @@ const NewBookButton = (): ReactElement => {
                 reader.readAsDataURL(input.files[0]);
               }
 
-              dispatch(updateImage(e.target.value));
             }}
-            className="file:hover:border-black file:focus:border-sky file:focus:outline-none file:border-2 file:shadow-lg file:rounded-xl file:w-[60%] file:h-10 file:bg-white p-4 -mb-7 file:mr-3 underline text-sky file:border-gray file:border-solid"
+            className="file:hover:border-black file:focus:border-sky file:focus:outline-none file:border-2 file:shadow-lg file:rounded-xl sm:file:w-[60%] file:h-10 file:bg-white p-4 -mb-7 file:mr-3 underline text-sky file:border-gray file:border-solid ml-20 sm:-ml-4"
           />
         </div>
       )}
-      <div className="flex gap-5 items-center justify-center relative">
+      <div className="flex gap-5 items-center justify-center">
         {pageButton("Back")}
         {pageButton("Next")}
       </div>

@@ -1,17 +1,10 @@
 import React, { ReactElement } from "react";
 import Image from "next/image";
+import { useAppSelector } from "../../lib/redux/hooks";
 
-const Book = (): ReactElement => {
-  //---This is just example data. Later, this data will be pulled from Redux store
-  let image = "";
-  image =
-    "https://prodimage.images-bn.com/lf?set=key%5Bresolve.pixelRatio%5D,value%5B1%5D&set=key%5Bresolve.width%5D,value%5B600%5D&set=key%5Bresolve.height%5D,value%5B10000%5D&set=key%5Bresolve.imageFit%5D,value%5Bcontainerwidth%5D&set=key%5Bresolve.allowImageUpscaling%5D,value%5B0%5D&set=key%5Bresolve.format%5D,value%5Bwebp%5D&source=url%5Bhttps://prodimage.images-bn.com/pimages/9780547928210_p0_v4_s600x595.jpg%5D&scale=options%5Blimit%5D,size%5B600x10000%5D&sink=format%5Bwebp%5D";
-  const title = "The Lord of The Rings";
-  const author = "J.R.R Tolkien";
-  const page = 75;
-  const totalPageCount = 200;
-  const stars = 4;
-  //----
+const Book = ({id}: {id: string}): ReactElement => {
+  const bookInfo = useAppSelector(state => state.userLibrary.books[id]);
+  const {title, author, rating: stars, image, totalPageCount, currentPageCount} = bookInfo
 
   const starsArray: ReactElement[] = [];
   for (let i = 0; i < 5; i++) {
@@ -54,7 +47,7 @@ const Book = (): ReactElement => {
             <p>by {author}</p>
             <div className="flex gap-3">{starsArray}</div>
           </div>
-          {`${Math.floor((page / totalPageCount) * 100)}% Complete`}
+          {`${Math.floor((currentPageCount / totalPageCount) * 100)}% Complete`}
         </div>
       </div>
 

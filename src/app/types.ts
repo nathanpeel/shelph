@@ -17,10 +17,11 @@ export type Book = {
   _id: string,
   title: string,
   author: string,
+  image: string,
   rating: number,
   startDate: string,
   finishDate: string,
-  currentPageCount: Number,
+  currentPageCount: number,
   totalPageCount: number,
   categories: string[],
   series: string

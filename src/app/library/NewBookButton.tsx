@@ -6,12 +6,19 @@ import { useAppDispatch, useAppSelector } from "../../../lib/redux/hooks";
 import {
   updateTitle,
   updateAuthor,
+  updateImage,
   updateTotalPageCount,
   updateCurrentPageCount,
   updateStartDate,
   updateFinishDate,
   resetForm,
 } from "../../../lib/redux/slices/newBookSlice";
+import { useAuth } from '@clerk/nextjs'
+import {
+  loadBooks,
+  loadSeries,
+  loadCategories,
+} from "../../../lib/redux/slices/userLibrarySlice";
 
 const NewBookButton = (): ReactElement => {
   const [currentPage, setCurrentPage] = useState(0); //manages the state of the page-based form modal
@@ -21,6 +28,8 @@ const NewBookButton = (): ReactElement => {
   const seriesData = useAppSelector((state) => state.userLibrary.series);
 
   const dispatch = useAppDispatch();
+
+  const { userId } = useAuth();
 
   //opens the modal and turns off scrolling
   const handleClick = (): void => {
@@ -38,7 +47,31 @@ const NewBookButton = (): ReactElement => {
 
   const changePage = (): void => {
     if (currentPage >= 4) {
-      console.log(formState);
+      fetch('/api/library', {
+        method: 'POST',
+        body: JSON.stringify({
+          authId: userId,
+          formData: formState
+        })
+      })
+      .then((data) => {
+        console.log('Book added succesfully')
+        fetch("http://localhost:3000/api/library")
+          .then((data) => {
+            if (data.ok) {
+              return data.json();
+            }
+          })
+          .then((data) => {
+            const { booklist, categories, series } = data.userData;
+            dispatch(loadBooks(booklist));
+            dispatch(loadCategories(categories));
+            dispatch(loadSeries(series));
+          })
+          .catch((err) => console.log(err));
+      })
+        .catch((err) => console.log(err))
+      
       handleCloseModal();
     } else setCurrentPage(currentPage + 1);
   };
@@ -92,6 +125,17 @@ const NewBookButton = (): ReactElement => {
           value={formState.author}
           onChange={(e: ChangeEvent<HTMLInputElement>) => {
             dispatch(updateAuthor(e.target.value));
+          }}
+          className="hover:border-black focus:border-sky focus:outline-none border-2 border-transparent shadow-lg rounded-xl w-[100%] h-10"
+        />
+      </div>
+      <div className="my-4">
+        <label className="text-lg">{'Image Link (Optional)'}</label>
+        <input
+          type="text"
+          value={formState.image}
+          onChange={(e: ChangeEvent<HTMLInputElement>) => {
+            dispatch(updateImage(e.target.value));
           }}
           className="hover:border-black focus:border-sky focus:outline-none border-2 border-transparent shadow-lg rounded-xl w-[100%] h-10"
         />

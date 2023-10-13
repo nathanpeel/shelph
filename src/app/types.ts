@@ -1,6 +1,7 @@
 export type newBookForm = {
   title: string,
   author: string,
+  image: string,
   series: string,
   category: {
     [key: string]: boolean

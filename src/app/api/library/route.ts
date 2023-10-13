@@ -2,6 +2,8 @@ import { NextResponse } from "next/server"
 import Book from "../../../../models/bookModel";
 import UserData from "../../../../models/userModel";
 import dbConnect from "../../../../lib/dbConnect";
+import { newBookForm } from "@/app/types";
+import {auth} from '@clerk/nextjs'
 
 // {
 //   title: {
@@ -29,12 +31,22 @@ import dbConnect from "../../../../lib/dbConnect";
 
 export async function POST(request: Request) {
   try {
-    // const {title, author, rating, startDate, finishDate, currentPageCount, totalPageCount, categories, series} = await request.json();
     await dbConnect();
-    const title = 'The Lord of The Rings', author = 'Miura'
 
-    const book = new Book({ title, author, rating: 5, startDate: '1-2-23' });
-    const data = await UserData.findOne({ username: 'banana' });
+    const { authId, formData} = await request.json()
+
+    const book = new Book({
+      title: formData.title,
+      author: formData.author,
+      rating: `${formData.rating}`,
+      startDate: formData.startDate,
+      finishDate: formData.finishDate,
+      image: formData.image,
+      currentPageCount: `${formData.currentPageCount}`,
+      totalPageCount: `${formData.totalPageCount}`,
+      series: formData.series
+    });
+    const data = await UserData.findOne({ authId, });
 
     if (!data) throw new Error('Could not find user in POST in library/route.ts')
 
@@ -42,6 +54,21 @@ export async function POST(request: Request) {
     await UserData.findOneAndUpdate({_id: data._id}, {booklist: newBookList})
   
     return NextResponse.json({"message": "success"}); 
+  } catch (err) {
+    return NextResponse.json({"message": `failurs: ${err}`}, {"status": 400})
+  }
+}
+
+export async function GET(request: Request) {
+  try {
+    await dbConnect();
+
+    const { userId } = auth();
+
+    const userData = await UserData.findOne({ authId: userId }).exec();
+    if (!userData.booklist) throw new Error('incorrect Id inputed inside library.route.ts - GET. The method for retireving the Id may need to be updated.')
+
+    return NextResponse.json({"userData": userData})
   } catch (err) {
     return NextResponse.json({"message": `failurs: ${err}`}, {"status": 400})
   }

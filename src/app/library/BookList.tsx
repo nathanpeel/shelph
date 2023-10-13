@@ -1,30 +1,24 @@
-'use client'
-import React, { ReactElement } from 'react'
+import React from 'react'
 import Book from '@/components/book';
-import {
-  loadBooks,
-  loadSeries,
-} from "../../../lib/redux/slices/userLibrarySlice";
-import { loadCategories} from '../../../lib/redux/slices/newBookSlice';
-import { useAppDispatch, useAppSelector} from '../../../lib/redux/hooks';
+import { useAppSelector } from '../../../lib/redux/hooks';
 
-const BookList = (): ReactElement => {
-  const dispatch = useAppDispatch();
-  //request data here -- Using mock data for now
-  dispatch(
-    loadBooks([{ _id: "sadfsdf" }, { _id: "asdfdsaf" }, { _id: "asdfddsaf" }])
-  );
-  dispatch(loadCategories(["Summer reading", "Sci-Fi", "BookTube Recs"]));
-  dispatch(loadSeries(["Berserk", "Monster", "The Lord of The Rings"]));
-  const booksObject = useAppSelector(state => state.userLibrary.books);
+
+const BookList = () => {
+  
+  const booksObject = useAppSelector(state => {
+    return state.userLibrary.books
+  });
 
   return (
-    <section className="my-10 sm:mt-20 flex flex-col items-center sm:gap-[85px] gap-[60px]">
-      {Object.keys(booksObject).map((id) => (
-        <Book key={crypto.randomUUID()}/>
-      ))}
-    </section>
+    <div className="my-10 sm:mt-20 flex flex-col items-center sm:gap-[85px] gap-[60px]">
+      {Object.keys(booksObject).map((id) => {
+        //pass the id into the book here
+        return (
+          <Book key={crypto.randomUUID()} />
+        )
+      })}
+    </div>
   );
 }
 
-export default BookList;
+export default BookList

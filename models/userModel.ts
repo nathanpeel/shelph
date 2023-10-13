@@ -2,8 +2,7 @@ import mongoose from "mongoose";
 import { bookSchema, BookType } from "./bookModel";
 
 export interface UserType extends mongoose.Document {
-  username: string,
-  password: string,
+  authId: string,
   booklist: BookType[],
   categories: string[],
   series: string[],
@@ -15,8 +14,7 @@ export interface UserType extends mongoose.Document {
 }
 
 const userDataSchema = new mongoose.Schema<UserType>({
-  username: String,
-  password: String,
+  authId: String,
   booklist: [bookSchema],
   categories: [String],
   series: [String],
@@ -27,6 +25,4 @@ const userDataSchema = new mongoose.Schema<UserType>({
   }
 })
 
-const User = mongoose.model('Users', userDataSchema);
-
-export default mongoose.models.User || User;
+export default mongoose.models.User || mongoose.model('User', userDataSchema);

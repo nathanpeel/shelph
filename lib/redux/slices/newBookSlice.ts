@@ -4,6 +4,7 @@ import { newBookForm } from "@/app/types";
 const initialState: newBookForm = {
   title: "",
   author: "",
+  image: "",
   series: "",
   category: {},
   rating: 0,
@@ -23,6 +24,9 @@ export const newBookSlice = createSlice({
     },
     updateAuthor: (state, action: PayloadAction<string>) => {
       state.author = action.payload;
+    },
+    updateImage: (state, action: PayloadAction<string>) => {
+      state.image = action.payload;
     },
     updateSeries: (state, action: PayloadAction<string>) => {
       state.series = action.payload;
@@ -67,6 +71,6 @@ export const newBookSlice = createSlice({
   },
 });
 
-export const { updateTitle, updateAuthor, updateSeries, updateCateogry, loadCategories, updateRating, updateTotalPageCount, updateCurrentPageCount, updateStartDate, updateFinishDate, resetForm } = newBookSlice.actions;
+export const { updateTitle, updateAuthor, updateImage, updateSeries, updateCateogry, loadCategories, updateRating, updateTotalPageCount, updateCurrentPageCount, updateStartDate, updateFinishDate, resetForm } = newBookSlice.actions;
 
 export default newBookSlice.reducer;

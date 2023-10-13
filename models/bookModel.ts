@@ -3,6 +3,7 @@ import mongoose from "mongoose";
 export interface BookType extends mongoose.Document {
   title: string,
   author: string,
+  image: string,
   rating: number,
   startDate: string,
   finishDate: string,
@@ -18,6 +19,7 @@ export const bookSchema = new mongoose.Schema<BookType>({
     required: [true, 'Book title is required'],
     minLength: [1, 'Title must have a length of at least 1']
   },
+  image: String,
   author: {
     type: String,
     required: [true, 'Author is required'],
@@ -36,5 +38,4 @@ export const bookSchema = new mongoose.Schema<BookType>({
 });
 
 
-const Book = mongoose.model('Book', bookSchema);
-export default mongoose.models.Book || Book;
+export default mongoose.models.Book || mongoose.model('Book', bookSchema);

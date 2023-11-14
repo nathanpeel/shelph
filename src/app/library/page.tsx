@@ -1,10 +1,8 @@
 import Navbar from "@/components/navbar";
 import NewBookButton from "./NewBookButton";
 import BookListWrapper from "./BookListWrapper";
-import { ReactElement, useEffect } from "react";
 import { auth } from '@clerk/nextjs'
 import dbConnect from "../../../lib/dbConnect";
-import mongoose from "mongoose";
 import userModel from "../../../models/userModel";
 
 

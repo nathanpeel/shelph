@@ -1,7 +1,7 @@
 import { NextResponse } from "next/server"
-import Book from "../../../../models/bookModel";
-import UserData from "../../../../models/userModel";
-import dbConnect from "../../../../lib/dbConnect";
+import Book from "../../lib/models/bookModel";
+import UserData from "../../lib/models/userModel";
+import dbConnect from "../../lib/dbConnect";
 import { newBookForm } from "@/app/types";
 import {auth} from '@clerk/nextjs'
 

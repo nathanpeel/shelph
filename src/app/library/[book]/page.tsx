@@ -1,38 +1,55 @@
-"use client";
-import React, {ReactElement, useState} from "react";
-import { useAppSelector, useAppDispatch } from "../../../../lib/redux/hooks";
+import React, { ReactElement } from "react";
 import Navbar from "@/components/navbar";
-import Book from "@/components/book";
+import Book from "@/app/library/book";
 import Image from "next/image";
+import dbConnect from "@/app/lib/dbConnect";
+import { auth } from "@clerk/nextjs";
+import userModel from "@/app/lib/models/userModel";
+import { Book as bookType } from "@/app/types";
 
-const Page = ({ params }: { params: { book: string } }) => {
+const getBook = async (id: string) => {
+  await dbConnect();
 
-  const { book } = params;
+  const { userId } = auth();
+  //search the database for that user
+  //if that user exists, return the data for it
+  const data = await userModel.findOne({ authId: userId }).exec();
 
-  const bookData = useAppSelector((state) => {
-    return state.userLibrary.books[book];
-  });
-
-  const { title, author, image, currentPageCount, totalPageCount, rating } = bookData;
-
-  const [starState, setStarState] = useState(rating);
-
-
-  const starsArray: ReactElement[] = [];
-  for (let i = 0; i < 5; i++) {
-    starsArray.push(
-      <div className="relative md:w-8 md:h-8 w-5 h-5" onClick={() => {
-        setStarState(i + 1)
-      }}>
-        <Image
-          src={i < starState ? "/star.svg" : "/emptyStar.svg"}
-          fill
-          alt="star"
-          sizes=""
-        />
-      </div>
-    );
+  if (data) {
+    return data.booklist.find((el: bookType) => el.id == id);
   }
+
+  //if the user doesn't exist, create a new user in the database and then return the data
+  // const newUser = new userModel({ authId: userId });
+  // await newUser.save();
+  // const newData = await userModel.findOne({ authId: userId }).exec();
+  // return newData;
+};
+
+const Page = async ({ params }: { params: { book: string } }) => {
+  const { book } = params;
+  const bookData = await getBook(book);
+  const {title, author, currentPageCount, totalPageCount, image} = bookData
+
+
+  // const starsArray: ReactElement[] = [];
+  // for (let i = 0; i < 5; i++) {
+  //   starsArray
+  //     .push
+  //     <div
+  //       className="relative md:w-8 md:h-8 w-5 h-5"
+  //       onClick={() => {
+  //         setStarState(i + 1);
+  //       }}>
+  //       <Image
+  //         src={i < starState ? "/star.svg" : "/emptyStar.svg"}
+  //         fill
+  //         alt="star"
+  //         sizes=""
+  //       />
+  //     </div>
+  //     ();
+  // }
 
   return (
     <div>
@@ -60,7 +77,7 @@ const Page = ({ params }: { params: { book: string } }) => {
             <p className="text-3xl">{`${Math.floor(
               (currentPageCount / totalPageCount) * 100
             )}% Complete`}</p>
-            <div className="flex gap-3 my-3">{starsArray}</div>
+            {/* <div className="flex gap-3 my-3">{starsArray}</div> */}
           </div>
           <div className="rounded-full bg-gradient-to-br from-pink to-orange w-[100%] h-3 sm:mt-5 mt-2" />
         </div>
@@ -78,9 +95,7 @@ const Page = ({ params }: { params: { book: string } }) => {
             </div>
             <div>
               <p>Updated</p>
-              <div>
-                {}
-              </div>
+              <div>{}</div>
             </div>
             <button>Save</button>
           </div>

@@ -1,25 +1,17 @@
 import React, { ReactElement } from "react";
 import Image from "next/image";
-import { useAppSelector } from "../../lib/redux/hooks";
 import Link from "next/link";
 
-const Book = ({ id }: { id: string }): ReactElement => {
-  const bookInfo = useAppSelector((state) => state.userLibrary.books[id]);
-  const {
-    title,
-    author,
-    rating: stars,
-    image,
-    totalPageCount,
-    currentPageCount,
-  } = bookInfo;
+const Book = ({ id, item }: any): ReactElement => {
+
+  const {rating, image, title, currentPage, author, currentPageCount, totalPageCount} = item
 
   const starsArray: ReactElement[] = [];
   for (let i = 0; i < 5; i++) {
     starsArray.push(
       <div className="relative md:w-8 md:h-8 w-5 h-5">
         <Image
-          src={i < stars ? "/star.svg" : "/emptyStar.svg"}
+          src={i < rating ? "/star.svg" : "/emptyStar.svg"}
           fill
           alt="star"
           sizes=""

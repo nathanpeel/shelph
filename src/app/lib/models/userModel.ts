@@ -13,6 +13,7 @@ export interface UserType extends mongoose.Document {
   }
 }
 
+//Change to bookList with capital L
 const userDataSchema = new mongoose.Schema<UserType>({
   authId: String,
   booklist: [bookSchema],

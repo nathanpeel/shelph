@@ -1,30 +1,16 @@
 import React, { ReactElement } from "react";
 import Image from "next/image";
 import Link from "next/link";
+import Stars from "@/components/Stars";
 
 const Book = ({ id, item }: any): ReactElement => {
 
   const {rating, image, title, currentPage, author, currentPageCount, totalPageCount} = item
 
-  const starsArray: ReactElement[] = [];
-  for (let i = 0; i < 5; i++) {
-    starsArray.push(
-      <div className="relative md:w-8 md:h-8 w-5 h-5">
-        <Image
-          src={i < rating ? "/star.svg" : "/emptyStar.svg"}
-          fill
-          alt="star"
-          sizes=""
-        />
-      </div>
-    );
-  }
-
   return (
     <Link href={`/library/${id}`}>
       <div
-        className="w-[90vw] h-[35vw] lg:w-[950px] lg:h-[370px] xl:w-[1150px] xl:h-[470px]"
-        key={crypto.randomUUID()}>
+        className="w-[90vw] h-[35vw] lg:w-[950px] lg:h-[370px] xl:w-[1150px] xl:h-[470px]">
         <div className="flex w-[100%] h-[100%] gap-10">
           <div className="relative bg-gray w-[25%] h-[100%] rounded-xl">
             {image !== "" ? (
@@ -45,7 +31,7 @@ const Book = ({ id, item }: any): ReactElement => {
             <div className="flex flex-col sm:gap-5 gap-1">
               <h2 className="text-2xl sm:text-4xl font-bold">{title}</h2>
               <p>by {author}</p>
-              <div className="flex gap-3">{starsArray}</div>
+              <Stars number={rating}/>
             </div>
             {`${Math.floor(
               (currentPageCount / totalPageCount) * 100

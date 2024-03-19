@@ -1,6 +1,6 @@
 import Navbar from "@/components/Navbar";
 import Link from "next/link";
-import Book from "./book";
+import Book from "./Book";
 import { getBookList } from "../lib/data";
 import { bookType } from "../types";
 

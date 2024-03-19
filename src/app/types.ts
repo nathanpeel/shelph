@@ -13,8 +13,8 @@ export type newBookForm = {
   finishDate: string
 }
 
-export type Book = {
-  _id: string,
+export type bookType = {
+  id: string,
   title: string,
   author: string,
   image: string,

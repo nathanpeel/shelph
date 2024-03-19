@@ -1,21 +1,16 @@
-'use client'
-import { ReactElement } from 'react';
-import { useRouter } from 'next/navigation';
+import { ReactElement } from "react";
+import Link from "next/link";
 
-export default function Home(): ReactElement {
-
-  const router = useRouter();
-  setTimeout(() => {
-    router.push('/library')
-  }, 999)
+export default function Page(): ReactElement {
 
   return (
     <div className="bg-gradient-to-t from-yellow to-strawberry h-[100vh] flex flex-col items-center pt-80">
       <h1 className="text-7xl font-bold sm:text-9xl text-center mb-20 text-white">
         <p className="transition-opacity ease-in duration-100 opacity-100">
-          Shelph
+          Welcome to Shelph
         </p>
       </h1>
+      <Link href="/library">Login</Link>
     </div>
   );
 }

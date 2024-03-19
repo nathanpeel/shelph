@@ -6,7 +6,7 @@ type props = {
   current: string
 }
 
-const Navbar = ({current}: props): ReactElement => {
+export default function Navbar({current}: props): ReactElement {
 
   return (
     <div className="flex justify-between items-center sm:p-3 relative mb-5 sm:mb-10">
@@ -70,5 +70,3 @@ const Navbar = ({current}: props): ReactElement => {
     </div>
   );
 }
-
-export default Navbar

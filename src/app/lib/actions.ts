@@ -10,13 +10,13 @@ import { redirect } from "next/navigation";
 
 //this uses zod to create an expected data from the form
 const FormSchema = z.object({
-  title: z.string(), // REQUIRED
-  author: z.string(), // REQUIRED
+  title: z.string().min(1), // REQUIRED
+  author: z.string().min(1), // REQUIRED
   image: z.string().optional(),
   rating: z.coerce.number().optional(),
   startDate: z.string().optional(),
   finishDate: z.string().optional(),
-  totalPageCount: z.coerce.number(), // REQUIRED
+  totalPageCount: z.coerce.number().int().positive().gte(1), // REQUIRED
   currentPageCount: z.coerce.number().optional(),
   categories: z.string().optional().array().optional(),
   series: z.string().optional(),
@@ -39,16 +39,15 @@ export async function createBook(prevState: State, formData: FormData) {
   const validatedFields = FormSchema.safeParse({
     title: formData.get('title'),
     author: formData.get('author'),
-    image: formData.get('image'),
-    rating: formData.get('rating'),
+    image: formData.get('image') || '',
+    rating: formData.get('rating') || 0,
     startDate: formData.get('startDate'),
     finishDate: formData.get('finishDate'),
     totalPageCount: formData.get('totalPageCount'),
     currentPageCount: formData.get('currentPageCount'),
-    categories: formData.get('categories'),
-    series: formData.get('series'),
+    categories: formData.get('categories') || [],
+    series: formData.get('series') || '',
   });
-
   //checks if the form data is valid and sends errors to the form if it is not.
   if (!validatedFields.success) {
     return {
@@ -56,7 +55,6 @@ export async function createBook(prevState: State, formData: FormData) {
       message: 'Missing or incorrect fields. Failed to create book'
     }
   }
-
   const {
     title,
     author,
@@ -93,13 +91,12 @@ export async function createBook(prevState: State, formData: FormData) {
     if (!data) throw new Error('Could not find user when trying to add a book')
 
     const newBookList = [...data.booklist, book];
-    await UserData.findOneAndUpdate({_id: data._id}, {booklist: newBookList})
+    await UserData.findOneAndUpdate({ _id: data._id }, { booklist: newBookList })
   } catch (error) {
     return {
       message: "Database Error: Failed to Create Book"
     }
   }
-
   revalidatePath('/library');
   redirect('/library');
 

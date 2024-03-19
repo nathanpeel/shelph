@@ -1,20 +1,32 @@
 import Navbar from "@/components/Navbar";
-import BookList from "./BookList";
 import Link from "next/link";
+import Book from "./Book";
+import { getBookList } from "../lib/data";
+import { bookType } from "../types";
 
-const Library = async () => {
+export default async function Page() {
+  const bookList = await getBookList();
+
   return (
     <div>
       <Navbar current="Your Library" />
       <div className="flex flex-col items-center">
-        <h1 className="text-green sm:text-5xl font-bold text-3xl">
+        <h1 className="text-green sm:text-5xl font-bold text-3xl mb-10">
           Your Books
         </h1>
-        <Link href="/library/new-item">New Item</Link>
-        <BookList />
+        <Link
+          href="/library/new-item"
+          className="rounded-full bg-gradient-to-br from-pink to-orange text-white py-2 px-6 text-lg sm:font-medium font-semibold">
+          New Book
+        </Link>
+        <div className="my-20 sm:mt-20 flex flex-col items-center sm:gap-[85px] gap-[60px]">
+          {bookList.map((item: bookType) => {
+            const { id } = item;
+            //pass the id into the book here
+            return <Book key={crypto.randomUUID()} id={id} item={item} />;
+          })}
+        </div>
       </div>
     </div>
   );
 };
-
-export default Library;

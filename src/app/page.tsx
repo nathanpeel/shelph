@@ -1,7 +1,7 @@
 import { ReactElement } from "react";
 import Link from "next/link";
 
-export default function Home(): ReactElement {
+export default function Page(): ReactElement {
 
   return (
     <div className="bg-gradient-to-t from-yellow to-strawberry h-[100vh] flex flex-col items-center pt-80">

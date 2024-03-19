@@ -17,7 +17,7 @@ export default function UpdateStars({ number }: { number: number }) {
   for (let i = 0; i < 5; i++) {
     starsArray.push(
       <div
-        className="relative md:w-8 md:h-8 w-5 h-5"
+        className="relative w-8 h-8"
         key={crypto.randomUUID()}
         onClick={() => {
           handleClick(i + 1);

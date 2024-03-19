@@ -1,11 +1,17 @@
-import React, { ReactElement } from "react";
+import React from "react";
 import Image from "next/image";
 import Link from "next/link";
-import Stars from "@/components/Stars";
+import Stars from "@/app/library/Stars";
+import { bookType } from "../types";
 
-const Book = ({ id, item }: any): ReactElement => {
+type props = {
+  id: string;
+  item: bookType
+}
 
-  const {rating, image, title, currentPage, author, currentPageCount, totalPageCount} = item
+export default function Book ({ id, item }: props) {
+
+  const {rating, image, title, author, currentPageCount, totalPageCount} = item
 
   return (
     <Link href={`/library/${id}`}>
@@ -39,10 +45,8 @@ const Book = ({ id, item }: any): ReactElement => {
           </div>
         </div>
 
-        <div className="rounded-full bg-gradient-to-br from-pink to-orange w-[100%] h-3 sm:mt-5 mt-2"></div>
+        <div className="rounded-full bg-gradient-to-br from-pink to-orange w-[100%] sm:h-3 h-2 sm:mt-5 mt-2"></div>
       </div>
     </Link>
   );
 };
-
-export default Book;

@@ -1,9 +1,7 @@
-import React from "react";
 import Navbar from "@/components/Navbar";
-import Link from "next/link";
 import { UserButton } from "@clerk/nextjs";
 
-const Settings = () => {
+export default function Page () {
   return (
     <div className="bg-white h-[100vh] text-black">
       <Navbar current="Settings" />
@@ -23,5 +21,3 @@ const Settings = () => {
     </div>
   );
 };
-
-export default Settings;

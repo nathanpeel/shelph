@@ -1,6 +1,6 @@
 import Navbar from "@/components/Navbar";
 import Link from "next/link";
-import Book from "./Book";
+import Book from "./book";
 import { getBookList } from "../lib/data";
 import { bookType } from "../types";
 
@@ -29,4 +29,4 @@ export default async function Page() {
       </div>
     </div>
   );
-};
+}

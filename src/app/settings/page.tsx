@@ -1,7 +1,7 @@
 import Navbar from "@/components/Navbar";
 import { UserButton } from "@clerk/nextjs";
 
-export default function Page () {
+export default function Page() {
   return (
     <div className="bg-white h-[100vh] text-black">
       <Navbar current="Settings" />
@@ -20,4 +20,4 @@ export default function Page () {
       </div>
     </div>
   );
-};
+}

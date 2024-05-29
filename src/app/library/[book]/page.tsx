@@ -3,10 +3,11 @@ import Navbar from "@/components/Navbar";
 import Image from "next/image";
 import { getBook } from "@/app/lib/data";
 import UpdateStars from "./UpdateStars";
+import { bookType } from "@/app/types";
 
-const Page = async ({ params }: { params: { book: string } }) => {
+export default async function Page({ params }: { params: { book: string } }) {
   const { book } = params;
-  const bookData = await getBook(book);
+  const bookData: bookType = await getBook(book);
   const { title, author, currentPageCount, totalPageCount, image, rating } =
     bookData;
 
@@ -39,7 +40,7 @@ const Page = async ({ params }: { params: { book: string } }) => {
               <p className="text-3xl">{`${Math.floor(
                 (currentPageCount / totalPageCount) * 100
               )}% Complete`}</p>
-              <UpdateStars number={rating} />
+              <UpdateStars number={rating} id={book} />
             </div>
           </div>
           <div className="rounded-full bg-gradient-to-br from-pink to-orange w-[100%] h-3 sm:mt-5 mt-2" />
@@ -67,5 +68,3 @@ const Page = async ({ params }: { params: { book: string } }) => {
     </div>
   );
 };
-
-export default Page;

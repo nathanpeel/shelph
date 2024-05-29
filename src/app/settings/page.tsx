@@ -1,6 +1,15 @@
+/**
+ * Route for the settings page. 
+ * Current this is just where the user can log out.
+ * Eventually, there will be options to change to dark mode and more. 
+ */
 import Navbar from "@/components/Navbar";
 import { UserButton } from "@clerk/nextjs";
 
+/**
+ * 
+ * @returns JSX Element
+ */
 export default function Page() {
   return (
     <div className="bg-white h-[100vh] text-black">

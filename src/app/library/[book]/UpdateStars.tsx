@@ -1,18 +1,26 @@
 "use client";
 
+/**
+ * Creates a component for updating the rating of a book using clickable stars.
+ */
+
 import Image from "next/image";
 import { ReactElement } from "react";
 import { useState } from "react";
 import { updateRating } from "@/app/lib/actions";
 
+
+/**
+ * @param number current rating of the book
+ * @param id id of the book
+ * @returns JSX Element 
+ */
 export default function UpdateStars({ number, id }: { number: number, id: string }) {
   const [rating, setRating] = useState(number);
 
   async function handleClick(amount: number) {
     setRating(amount);
-
-    //add logic for updating database
-    await updateRating(amount, id);
+    await updateRating(amount, id); // uses server action to update database
   }
 
   const starsArray: ReactElement[] = [];

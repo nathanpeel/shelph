@@ -1,3 +1,7 @@
+/**
+ * This is a dynamic route for individual book pages
+ */
+
 import React, { ReactElement } from "react";
 import Navbar from "@/components/Navbar";
 import Image from "next/image";
@@ -5,11 +9,16 @@ import { getBook } from "@/app/lib/data";
 import UpdateStars from "./UpdateStars";
 import { bookType } from "@/app/types";
 
+
+/**
+ * @async
+ * @param param this contains the id of the book under the property book
+ * @returns JSX Element
+ */
 export default async function Page({ params }: { params: { book: string } }) {
   const { book } = params;
   const bookData: bookType = await getBook(book);
-  const { title, author, currentPageCount, totalPageCount, image, rating } =
-    bookData;
+  const { title, author, currentPageCount, totalPageCount, image, rating } = bookData;
 
   return (
     <div>

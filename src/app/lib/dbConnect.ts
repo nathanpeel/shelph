@@ -1,3 +1,7 @@
+/**
+ * Handles the connection process for MongoDB
+ */
+
 import mongoose from "mongoose";
 
 declare global {
@@ -18,7 +22,14 @@ if (!cached) {
   cached = global.mongoose = { conn: null, promise: null };
 }
 
-async function dbConnect() {
+/**
+ * Connects the database when invoked. 
+ * 
+ * @async 
+ * @function dbConnect
+ * @returns Mongoose connection object
+ */
+export default async function dbConnect() {
   if (cached.conn) {
     return cached.conn;
   }
@@ -43,6 +54,3 @@ async function dbConnect() {
 
   return cached.conn;
 }
-
-//run this function in routes where connection to a database is needed. Use await.
-export default dbConnect;

@@ -1,5 +1,10 @@
+/**
+ * Middleware for clerk
+ */
+
 import { authMiddleware } from '@clerk/nextjs'
 
+// determine which routes are public
 export default authMiddleware({
   publicRoutes: [
     "/",

@@ -1,6 +1,9 @@
 import mongoose from "mongoose";
 import { bookSchema, BookType } from "./bookModel";
 
+/**
+ * Defines user interface
+ */
 export interface UserType extends mongoose.Document {
   authId: string,
   bookList: BookType[],
@@ -13,6 +16,9 @@ export interface UserType extends mongoose.Document {
   }
 }
 
+/**
+ * Creates user schema
+ */
 const userDataSchema = new mongoose.Schema<UserType>({
   authId: String,
   bookList: [bookSchema],

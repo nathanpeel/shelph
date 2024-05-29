@@ -1,12 +1,17 @@
+/**
+ * Navbar component
+ */
 import React, { ReactElement } from 'react'
 import Link from 'next/link'
 import Image from 'next/image'
 
-type props = {
-  current: string
-}
 
-export default function Navbar({current}: props): ReactElement {
+/**
+ * 
+ * @param current the current tab/route being viewed
+ * @returns JSX Element
+ */
+export default function Navbar({current}: {current: string}): ReactElement {
 
   return (
     <div className="flex justify-between items-center sm:p-3 relative mb-5 sm:mb-10">
@@ -21,7 +26,7 @@ export default function Navbar({current}: props): ReactElement {
       <div className="bg-sky text-white md:text-lg text-md flex lg:gap-36 md:gap-9 sm:gap-5 rounded-full sm:px-8 py-3 px-10 lg:mr-[65px] sm:mr-[28px]">
 
         {
-          //conditionally renders the buttons based on the index and which button the user is currenlty on
+          // conditionally renders the buttons based on the index and which button the user is currently on
           ["Home", "Your Library", "Settings"].map((el, index) => {
             let folder = "";
             let icon = "";
@@ -37,10 +42,10 @@ export default function Navbar({current}: props): ReactElement {
               icon = "/settings.svg";
             }
 
-            //the class that all the button share
+            // the styling class that all the button share
             let classFrame =
               "flex items-center md:gap-3 gap-1 sm:border-b-2 sm:p-1 px-7";
-            //adds styles based on whether the button is the current page or not
+            // adds styles based on whether the button is the current page or not
             let className =
               el === current
                 ? (classFrame += " opacity-60")

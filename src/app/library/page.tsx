@@ -1,9 +1,17 @@
+/**
+ * Route for the library tab which contains the book list
+ */
+
 import Navbar from "@/components/Navbar";
 import Link from "next/link";
 import Book from "./Book";
 import { getBookList } from "../lib/data";
 import { bookType } from "../types";
 
+/**
+ * @async
+ * @returns JSX Element
+ */
 export default async function Page() {
   const bookList = await getBookList();
 
@@ -22,7 +30,6 @@ export default async function Page() {
         <div className="my-20 sm:mt-20 flex flex-col items-center sm:gap-[85px] gap-[60px]">
           {bookList.map((item: bookType) => {
             const { id } = item;
-            //pass the id into the book here
             return <Book key={crypto.randomUUID()} id={id} item={item} />;
           })}
         </div>

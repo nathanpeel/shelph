@@ -1,3 +1,7 @@
+/**
+ * the main route which is current the login page. 
+ * This will be updated to have a landing page in the future. 
+ */
 import { ReactElement } from "react";
 import Link from "next/link";
 

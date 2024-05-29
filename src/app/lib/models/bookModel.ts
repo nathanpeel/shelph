@@ -1,5 +1,8 @@
 import mongoose from "mongoose";
 
+/**
+ * Defines interface for book schema
+ */
 export interface BookType extends mongoose.Document {
   title: string,
   author: string,
@@ -13,6 +16,9 @@ export interface BookType extends mongoose.Document {
   series: string
 }
 
+/**
+ * Creates book schema
+ */
 export const bookSchema = new mongoose.Schema<BookType>({
   title: {
     type: String,

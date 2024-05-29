@@ -8,6 +8,7 @@ import Image from "next/image";
 import { getBook } from "@/app/lib/data";
 import UpdateStars from "./UpdateStars";
 import { bookType } from "@/app/types";
+import UpdateProgress from "./UpdateProgress";
 
 
 /**
@@ -54,25 +55,7 @@ export default async function Page({ params }: { params: { book: string } }) {
           </div>
           <div className="rounded-full bg-gradient-to-br from-pink to-orange w-[100%] h-3 sm:mt-5 mt-2" />
         </div>
-
-        <div className="flex flex-col items-center mb-10 text-lg">
-          <h2 className="text-sky text-2xl font-semibold mb-3">
-            Update Reading Progress
-          </h2>
-          <div className="flex gap-10 justify-between rounded-full shadow-lg py-3 px-7 border-2 border-gray items-center">
-            <div className="flex gap-2 items-center">
-              <p>Current Page</p>
-              <p className="bg-gradient-to-br from-pink to-orange bg-clip-text text-transparent text-2xl font-bold">
-                {currentPageCount}
-              </p>
-            </div>
-            <div>
-              <p>Updated</p>
-              <div>{}</div>
-            </div>
-            <button>Save</button>
-          </div>
-        </div>
+        <UpdateProgress currentPageCount={currentPageCount} id={book} />
       </main>
     </div>
   );

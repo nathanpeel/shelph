@@ -125,9 +125,13 @@ export async function createBook(prevState: State, formData: FormData) {
   redirect('/library');
 }
 
-// add a general update function
-
-// add an update rating function
+/**
+ * Updates the rating for a specific book
+ * 
+ * @param newRating the new star rating
+ * @param id the id of the book
+ * @returns nothing or an error message
+ */
 export async function updateRating(newRating: number, id: string) {
   const { userId: authId } = auth();
   
@@ -148,5 +152,34 @@ export async function updateRating(newRating: number, id: string) {
   revalidatePath('/library');
 }
 
+/**
+ * Updates the reading progress
+ * 
+ * @async
+ * @function updateProgress
+ * @param newCount the new page count progress
+ * @param id the id of the book
+ * @return nothing or error message
+ */
+export async function updateProgress(newCount: number, id: string) {
+  const { userId: authId } = auth();
+  
+  try {
+    await dbConnect();
+
+    const data = await UserData.findOne({ authId, });
+    if (!data) throw new Error('Could not find user when trying to update a book rating');
+
+    await UserData.findOneAndUpdate({ _id: data._id }, { $set: { 'bookList.$[element].currentPageCount': newCount } }, { arrayFilters: [{ 'element._id': id }] })
+  } catch (error) {
+    return {
+      message: "Database Error: Failed to update reading progress."
+    }
+  }
+
+   // Revalidate the library path to reflect the change on the list
+  revalidatePath('/library/');
+  revalidatePath(`/library/${id}`);
+}
 
 // add a delete function

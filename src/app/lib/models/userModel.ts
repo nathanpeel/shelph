@@ -3,7 +3,7 @@ import { bookSchema, BookType } from "./bookModel";
 
 export interface UserType extends mongoose.Document {
   authId: string,
-  booklist: BookType[],
+  bookList: BookType[],
   categories: string[],
   series: string[],
   stats: {
@@ -13,10 +13,9 @@ export interface UserType extends mongoose.Document {
   }
 }
 
-//Change to bookList with capital L
 const userDataSchema = new mongoose.Schema<UserType>({
   authId: String,
-  booklist: [bookSchema],
+  bookList: [bookSchema],
   categories: [String],
   series: [String],
   stats: {

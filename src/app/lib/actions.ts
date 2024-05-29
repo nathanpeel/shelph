@@ -1,5 +1,11 @@
 "use server";
 
+/**
+ * Server-side action to handle form validation and database operation for mutating data.
+ * 
+ * @module action
+ */
+
 import dbConnect from "./dbConnect";
 import { z } from 'zod';
 import BookModel from "./models/bookModel";
@@ -8,7 +14,9 @@ import { auth } from "@clerk/nextjs";
 import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
 
-//this uses zod to create an expected data from the form
+/**
+ * Defines the expected from data structure using Zod.
+ */
 const FormSchema = z.object({
   title: z.string().min(1), // REQUIRED
   author: z.string().min(1), // REQUIRED
@@ -23,7 +31,9 @@ const FormSchema = z.object({
 })
 
 
-//This is the validation state type
+/**
+ * Type definition for the validation state.
+ */
 export type State = {
   errors?: {
     title?: string[];
@@ -33,9 +43,18 @@ export type State = {
   message?: string | null;
 }
 
+/**
+ * Creates a new book entry in the database after validating the form data.
+ *
+ * @async
+ * @function createBook
+ * @param prevState The previous validation state.
+ * @param formData The form data to be validated and processed.
+ * @returns The result of the validation and database operation.
+ */
 export async function createBook(prevState: State, formData: FormData) {
 
-  //this validates the fields to ensure proper data types
+  // Validate the form fields to ensure proper data types.
   const validatedFields = FormSchema.safeParse({
     title: formData.get('title'),
     author: formData.get('author'),
@@ -48,13 +67,15 @@ export async function createBook(prevState: State, formData: FormData) {
     categories: formData.get('categories') || [],
     series: formData.get('series') || '',
   });
-  //checks if the form data is valid and sends errors to the form if it is not.
+
+  // Check if the form data is valid and return errors if it's not.
   if (!validatedFields.success) {
     return {
       errors: validatedFields.error.flatten().fieldErrors,
       message: 'Missing or incorrect fields. Failed to create book'
     }
   }
+
   const {
     title,
     author,
@@ -70,7 +91,7 @@ export async function createBook(prevState: State, formData: FormData) {
 
   const { userId: authId } = auth();
 
-  //submit data to the database
+  // Submit data to the database.
   try {
     await dbConnect();
 
@@ -86,26 +107,46 @@ export async function createBook(prevState: State, formData: FormData) {
       series: series,
       categories: categories
     });
+
     const data = await UserData.findOne({ authId, });
 
-    if (!data) throw new Error('Could not find user when trying to add a book')
+    if (!data) throw new Error('Could not find user when trying to add a book');
 
-    const newBookList = [...data.booklist, book];
-    await UserData.findOneAndUpdate({ _id: data._id }, { booklist: newBookList })
+    const newBookList = [...data.bookList, book];
+    await UserData.findOneAndUpdate({ _id: data._id }, { bookList: newBookList })
   } catch (error) {
     return {
       message: "Database Error: Failed to Create Book"
     }
   }
+
+  // Revalidate the library path and redirect to it.
   revalidatePath('/library');
   redirect('/library');
-
 }
 
-//add a general update function
+// add a general update function
 
-//add an update rating function
+// add an update rating function
+export async function updateRating(newRating: number, id: string) {
+  const { userId: authId } = auth();
+  
+  try {
+    await dbConnect();
 
-//add an update rating function
+    const data = await UserData.findOne({ authId, });
+    if (!data) throw new Error('Could not find user when trying to update a book rating');
 
-//add a delete function
+    await UserData.findOneAndUpdate({ _id: data._id }, { $set: { 'bookList.$[element].rating': newRating } }, { arrayFilters: [{ 'element._id': id }] })
+  } catch (error) {
+    return {
+      message: "Database Error: Failed to Update Rating."
+    }
+  }
+
+   // Revalidate the library path to reflect the change on the list
+  revalidatePath('/library');
+}
+
+
+// add a delete function

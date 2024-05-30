@@ -9,6 +9,7 @@ import { getBook } from "@/app/lib/data";
 import UpdateStars from "./UpdateStars";
 import { bookType } from "@/app/types";
 import UpdateProgress from "./UpdateProgress";
+import DeleteEdit from "./DeleteEdit";
 
 
 /**
@@ -55,7 +56,8 @@ export default async function Page({ params }: { params: { book: string } }) {
           </div>
           <div className="rounded-full bg-gradient-to-br from-pink to-orange w-[100%] h-3 sm:mt-5 mt-2" />
         </div>
-        <UpdateProgress currentPageCount={currentPageCount} id={book} />
+        <UpdateProgress currentPageCount={currentPageCount} totalPageCount={totalPageCount} id={book} />
+        <DeleteEdit title={title} id={book} />
       </main>
     </div>
   );

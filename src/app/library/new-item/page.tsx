@@ -62,7 +62,7 @@ export default function Page() {
       <h1 className="text-3xl text-center">Enter the Book Details</h1>
       <p>
         Required fields are indicate by{" "}
-        <span className="text-red-500">*</span>
+        <span className="text-red">*</span>
       </p>
       <form
         action={dispatch}
@@ -72,7 +72,7 @@ export default function Page() {
         {/* TITLE */}
         <div className="my-8">
           <label className="text-lg" htmlFor="title">
-            Book Title <span className="text-red-500">*</span>
+            Book Title <span className="text-red">*</span>
           </label>
           <input
             type="text"
@@ -83,7 +83,7 @@ export default function Page() {
           />
           <div id="title-error" aria-live="polite" aria-atomic>
             {state.errors?.title && (
-              <p className="mt-2 text-sm text-red-500">Please enter a title</p>
+              <p className="mt-2 text-sm text-red">Please enter a title</p>
             )}
           </div>
         </div>
@@ -92,7 +92,7 @@ export default function Page() {
         {/* AUTHOR */}
         <div className="my-8">
           <label className="text-lg" htmlFor="author">
-            Author <span className="text-red-500">*</span>
+            Author <span className="text-red">*</span>
           </label>
           <input
             type="text"
@@ -103,7 +103,7 @@ export default function Page() {
           />
           <div id="author-error" aria-live="polite" aria-atomic>
             {state.errors?.author && (
-              <p className="mt-2 text-sm text-red-500">
+              <p className="mt-2 text-sm text-red">
                 Please enter an author
               </p>
             )}
@@ -275,7 +275,7 @@ export default function Page() {
         <div className="my-8">
           <label className="text-lg" htmlFor="totalPageCount">
             Enter the book&apos;s total page count{" "}
-            <span className="text-red-500">*</span>
+            <span className="text-red">*</span>
           </label>
           <input
             type="number"
@@ -287,7 +287,7 @@ export default function Page() {
           />
           <div id="pageCount-error" aria-live="polite" aria-atomic>
             {state.errors?.totalPageCount && (
-              <p className="mt-2 text-sm text-red-500">
+              <p className="mt-2 text-sm text-red">
                 Please enter a total page count
               </p>
             )}

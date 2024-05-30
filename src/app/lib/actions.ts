@@ -182,4 +182,31 @@ export async function updateProgress(newCount: number, id: string) {
   revalidatePath(`/library/${id}`);
 }
 
-// add a delete function
+/**
+ * Deleted a specific book
+ * 
+ * @async
+ * @function deleteBook
+ * @param id the id of the book to delete
+ * @return nothing or error message
+ */
+export async function deleteBook(id: string) {
+  const { userId: authId } = auth();
+  
+  try {
+    await dbConnect();
+
+    const data = await UserData.findOne({ authId, });
+    if (!data) throw new Error('Could not find user when trying to update a book rating');
+
+    await UserData.findOneAndUpdate({ _id: data._id }, { $pull: { bookList: { _id: id } } });
+  } catch (error) {
+    return {
+      message: "Database Error: Failed to update reading progress."
+    }
+  }
+
+   // Revalidate the library path to reflect the change on the list
+  revalidatePath('/library/');
+  redirect('/library');
+}

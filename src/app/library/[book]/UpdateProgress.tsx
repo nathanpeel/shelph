@@ -11,19 +11,24 @@ import { updateProgress } from "@/app/lib/actions";
 /**
  *
  * @function UpdateProgress
- * @param currentPageCount the currentPageCount from the database
+ * @param currentPageCount the user's current place in the book via page count
+ * @param totalPageCount the total page count of the book
  * @param id the book id
  * @returns JSX Element
  */
 export default function UpdateProgress({
   currentPageCount,
+  totalPageCount,
   id,
 }: {
   currentPageCount: number;
+  totalPageCount: number;
   id: string;
-  }) {
+}) {
   // the type is number or undefined so the user can clear the field
-  const [newCount, setNewCount] = useState<number | undefined>(currentPageCount);
+  const [newCount, setNewCount] = useState<number | undefined>(
+    currentPageCount
+  );
 
   /**
    * Uses server action to update reading progress
@@ -33,7 +38,7 @@ export default function UpdateProgress({
       updateProgress(newCount, id);
     }
   }
-  
+
   return (
     <div className="flex flex-col items-center mb-10 text-lg">
       <h2 className="text-sky text-2xl font-semibold mb-3">
@@ -51,24 +56,29 @@ export default function UpdateProgress({
           <div className="flex items-center gap-2">
             <input
               type="number"
-              value={newCount === undefined ? '' : newCount}
+              value={newCount === undefined ? "" : newCount}
               onChange={(e) => {
                 const value = e.target.value.trim();
                 // ensures user can clear the field while ensuring the value is a number and not negative
-                if (value === "" || (!isNaN(+value) && +value >= 0)) {
+                if (
+                  value === "" ||
+                  (!isNaN(+value) && +value >= 0 && +value <= totalPageCount)
+                ) {
                   setNewCount(value === "" ? undefined : +value);
                 }
               }}
               min={0}
-              className="bg-green w-16 rounded-xl text-white h-10 px-2 text-2xl font-bold"
+              className="bg-green w-24 rounded-xl text-white h-10 px-2 text-2xl font-bold"
             />
             <div className="flex flex-col">
               <div
                 className="flex justify-center"
                 onClick={(e) => {
                   if (newCount === undefined) {
-                    setNewCount(currentPageCount + 1);
-                  } else {
+                    currentPageCount + 1 <= totalPageCount
+                      ? setNewCount(currentPageCount + 1)
+                      : "";
+                  } else if (newCount + 1 <= totalPageCount) {
                     setNewCount(newCount + 1);
                   }
                 }}>
@@ -98,7 +108,11 @@ export default function UpdateProgress({
             </div>
           </div>
         </div>
-        <button onClick={handleSave}>Save</button>
+        <button
+          onClick={handleSave}
+          className="rounded-full bg-gradient-to-br from-pink to-orange text-white py-2 px-6 text-lg sm:font-medium font-semibold">
+          Save
+        </button>
       </div>
     </div>
   );

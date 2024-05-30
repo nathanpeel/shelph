@@ -28,6 +28,7 @@ const FormSchema = z.object({
   currentPageCount: z.coerce.number().optional(),
   categories: z.string().optional().array().optional(),
   series: z.string().optional(),
+  id: z.string().optional(),
 })
 
 
@@ -123,6 +124,112 @@ export async function createBook(prevState: State, formData: FormData) {
   // Revalidate the library path and redirect to it.
   revalidatePath('/library');
   redirect('/library');
+}
+
+/**
+ * Uses a form to allow the user to edit some properties of a specific book
+ * 
+ * @async
+ * @function editBook
+ * @param prevState 
+ * @param formData 
+ * @returns 
+ */
+export async function editBook(prevState: State, formData: FormData) {
+
+  // Validate the form fields to ensure proper data types.
+  const validatedFields = FormSchema.safeParse({
+    title: formData.get('title'),
+    author: formData.get('author'),
+    startDate: formData.get('startDate'),
+    finishDate: formData.get('finishDate'),
+    image: formData.get('image') || '',
+    totalPageCount: formData.get('totalPageCount'),
+    categories: formData.get('categories') || [],
+    series: formData.get('series') || '',
+    id: formData.get('id')
+  });
+
+  // Check if the form data is valid and return errors if it's not.
+  if (!validatedFields.success) {
+    return {
+      errors: validatedFields.error.flatten().fieldErrors,
+      message: 'Missing or incorrect fields. Failed to create book'
+    }
+  }
+
+  const {
+    title,
+    author, 
+    startDate, 
+    finishDate, 
+    image,
+    totalPageCount, 
+    categories, 
+    series,
+    id
+  } = validatedFields.data;
+
+  interface NewBookData {
+    title: string;
+    author: string;
+    startDate?: string;
+    finishDate?: string;
+    image?: string;
+    totalPageCount: number;
+    categories?: (string | undefined)[];
+    series?: string;
+  }
+
+  const newBookData = {
+    title, 
+    author, 
+    startDate,
+    image,
+    finishDate,
+    totalPageCount,
+    categories, 
+    series,
+  }
+
+  const { userId: authId } = auth();
+
+  // Submit data to the database.
+  try {
+    await dbConnect();
+
+    const data = await UserData.findOne({ authId, });
+
+    if (!data) throw new Error('Could not find user when trying to edit a book');
+    if (!id) throw new Error('Could not find book with id when trying to edit a book');
+    const book = data.bookList.id(id);
+
+    let isDifferent = false;
+    for (const key in newBookData) {
+      const newValue = newBookData[key as keyof NewBookData];
+      if (newBookData.hasOwnProperty(key) && book[key] !== newValue) {
+        isDifferent = true;
+        const bookProp = `bookList.$[element].${key}`;
+        await UserData.findOneAndUpdate({ _id: data._id }, { $set: { [bookProp]: newValue } }, { arrayFilters: [{ 'element._id': id }] });
+      }
+    }
+
+    if (isDifferent) {
+      revalidatePath(`/library/${id}`);
+      redirect(`/`); // for some reason it doesn't matter what path is entered here
+      // it reloads the active book page regardless
+    } else {
+      return {
+        message: 'No changes, book not updated',
+        errors: {}
+      };
+    }
+
+  } catch (error) {
+    return {
+      message: "Database Error: Failed to Edit Book"
+    }
+  }
 }
 
 /**

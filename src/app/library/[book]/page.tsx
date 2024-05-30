@@ -11,7 +11,6 @@ import { bookType } from "@/app/types";
 import UpdateProgress from "./UpdateProgress";
 import DeleteEdit from "./DeleteEdit";
 
-
 /**
  * @async
  * @param param this contains the id of the book under the property book
@@ -20,7 +19,8 @@ import DeleteEdit from "./DeleteEdit";
 export default async function Page({ params }: { params: { book: string } }) {
   const { book } = params;
   const bookData: bookType = await getBook(book);
-  const { title, author, currentPageCount, totalPageCount, image, rating } = bookData;
+  const { title, author, currentPageCount, totalPageCount, image, rating } =
+    bookData;
 
   return (
     <div>
@@ -56,9 +56,27 @@ export default async function Page({ params }: { params: { book: string } }) {
           </div>
           <div className="rounded-full bg-gradient-to-br from-pink to-orange w-[100%] h-3 sm:mt-5 mt-2" />
         </div>
-        <UpdateProgress currentPageCount={currentPageCount} totalPageCount={totalPageCount} id={book} />
-        <DeleteEdit title={title} id={book} />
+        <UpdateProgress
+          currentPageCount={currentPageCount}
+          totalPageCount={totalPageCount}
+          id={book}
+        />
+        <DeleteEdit
+          bookData={{
+            title,
+            author,
+            currentPageCount,
+            totalPageCount,
+            image,
+            rating,
+            startDate: bookData.startDate,
+            finishDate: bookData.finishDate,
+            id: book,
+            categories: bookData.categories,
+            series: bookData.series,
+          }}
+        />
       </main>
     </div>
   );
-};
+}

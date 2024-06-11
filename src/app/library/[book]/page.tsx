@@ -10,6 +10,7 @@ import UpdateStars from "./UpdateStars";
 import { bookType } from "@/app/types";
 import UpdateProgress from "./UpdateProgress";
 import DeleteEdit from "./DeleteEdit";
+import { notFound } from "next/navigation";
 
 /**
  * @async
@@ -19,6 +20,8 @@ import DeleteEdit from "./DeleteEdit";
 export default async function Page({ params }: { params: { book: string } }) {
   const { book } = params;
   const bookData: bookType = await getBook(book);
+  if (!bookData) notFound();
+  
   const { title, author, currentPageCount, totalPageCount, image, rating } =
     bookData;
 

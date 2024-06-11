@@ -1,7 +1,8 @@
 import dbConnect from "./dbConnect";
-import { auth } from "@clerk/nextjs";
+import { auth } from "../../../auth";
 import userModel from "./models/userModel";
 import { bookType } from "../types";
+import { redirect } from "next/navigation";
 
 /**
  * Retrieves the user's information from the database.
@@ -15,17 +16,20 @@ import { bookType } from "../types";
 export async function getUserInfo() {
   await dbConnect();
 
-  const { userId } = auth(); // Retrieves userId from Clerk.
+  const session = await auth();
+  if (!session) redirect('/login');
+  if (!session.user) return null;
+  const userId = session.user.email;
+  
 
   // Search the database for the user.
-  const data = await userModel.findOne({ authId: userId }).exec();
+  const data = await userModel.findOne({ authId: session.user.email }).exec();
 
   if (data) {
     return data;
   }
 
   // If the user doesn't exist, create a new user in the database and return the data.
-  // Note: This section might need to be updated later when migrating to NextAuth.
   const newUser = new userModel({ authId: userId });
   await newUser.save();
   const newData = await userModel.findOne({ authId: userId }).exec();

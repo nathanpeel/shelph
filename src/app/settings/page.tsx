@@ -5,12 +5,16 @@
  */
 import Navbar from "@/components/Navbar";
 import { UserButton } from "@clerk/nextjs";
+import { getUserInfo } from "../lib/data";
 
 /**
  * 
  * @returns JSX Element
  */
-export default function Page() {
+export default async function Page() {
+  // This is just a place holder for the data fetching for this route
+  const data = await getUserInfo();
+
   return (
     <div className="bg-white h-[100vh] text-black">
       <Navbar current="Settings" />

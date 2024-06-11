@@ -4,6 +4,7 @@
 import React, { ReactElement } from 'react'
 import Link from 'next/link'
 import Image from 'next/image'
+import { SignOut } from './SignOut';
 
 
 /**
@@ -69,9 +70,7 @@ export default function Navbar({current}: {current: string}): ReactElement {
         }
         
       </div>
-      <Link className="self-start" href="/login">
-        <p className="self-start sm:visible sm:w-full collapse w-0">Logout</p>
-      </Link>
+      <SignOut/>
     </div>
   );
 }

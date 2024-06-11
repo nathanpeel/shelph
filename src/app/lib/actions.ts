@@ -10,9 +10,21 @@ import dbConnect from "./dbConnect";
 import { z } from 'zod';
 import BookModel from "./models/bookModel";
 import UserData from "./models/userModel";
-import { auth } from "@clerk/nextjs";
 import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
+import { auth } from "../../../auth";
+
+/**
+ * Fetches userId
+ * 
+ */
+async function getUserId() {
+  const session = await auth();
+  if (!session) redirect('/login');
+  if (!session.user) return null;
+  return session.user.email;
+}
+
 
 /**
  * Defines the expected from data structure using Zod.
@@ -90,7 +102,7 @@ export async function createBook(prevState: State, formData: FormData) {
     series
   } = validatedFields.data;
 
-  const { userId: authId } = auth();
+  const authId = await getUserId();
 
   // Submit data to the database.
   try {
@@ -192,7 +204,7 @@ export async function editBook(prevState: State, formData: FormData) {
     series,
   }
 
-  const { userId: authId } = auth();
+  const authId = await getUserId();
 
   // Submit data to the database.
   try {
@@ -240,7 +252,7 @@ export async function editBook(prevState: State, formData: FormData) {
  * @returns nothing or an error message
  */
 export async function updateRating(newRating: number, id: string) {
-  const { userId: authId } = auth();
+  const authId = await getUserId();
   
   try {
     await dbConnect();
@@ -269,7 +281,7 @@ export async function updateRating(newRating: number, id: string) {
  * @return nothing or error message
  */
 export async function updateProgress(newCount: number, id: string) {
-  const { userId: authId } = auth();
+  const authId = await getUserId();
   
   try {
     await dbConnect();
@@ -298,7 +310,7 @@ export async function updateProgress(newCount: number, id: string) {
  * @return nothing or error message
  */
 export async function deleteBook(id: string) {
-  const { userId: authId } = auth();
+  const authId = await getUserId();
   
   try {
     await dbConnect();

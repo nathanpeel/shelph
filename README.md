@@ -11,8 +11,6 @@ Shelph is a reading list management application.
 This project is based on Shelph 1.0.0, but will add many more features. 
 
 **Next Steps**
-- Migrate to NextAuth
-- Add full update/delete functionality
 - Group books by series
 - Unit Testing
 - Optimized use of Next.js features

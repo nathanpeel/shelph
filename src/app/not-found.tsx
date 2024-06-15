@@ -9,12 +9,16 @@ export default function NotFound() {
   const [time, setTime] = useState(10);
 
   useEffect(() => {
-    setInterval(() => {
+
+    const interval = setInterval(() => {
       if (time <= 1) {
-        router.push("/library"); // redirect after 10 seconds
+        clearInterval(interval);
+        router.push("/library");
       }
-      setTime(time - 1); // decrement the countdown
-    }, 1000);
+      setTime(time - 1);
+    }, 1000)
+
+
   }, [router, time]);
 
   return (

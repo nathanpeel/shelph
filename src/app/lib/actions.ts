@@ -13,6 +13,8 @@ import UserData from "./models/userModel";
 import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
 import { auth } from "../../../auth";
+import { hashEmail } from "./data";
+import { signOut } from "../../../auth";
 
 /**
  * Fetches userId
@@ -22,7 +24,8 @@ async function getUserId() {
   const session = await auth();
   if (!session) redirect('/login');
   if (!session.user) return null;
-  return session.user.email;
+  if (typeof session.user.email !== 'string') return null;
+  return hashEmail(session.user.email); // hashes the email to compare to database
 }
 
 
@@ -328,4 +331,28 @@ export async function deleteBook(id: string) {
    // Revalidate the library path to reflect the change on the list
   revalidatePath('/library/');
   redirect('/library');
+}
+
+/**
+ * Delete a user's account
+ * 
+ * @async
+ * @function deleteAccount
+ * @return nothing or error message
+ */
+export async function deleteAccount() {
+  const authId = await getUserId();
+
+  try {
+    await dbConnect();
+
+    await UserData.deleteOne({ authId, });
+  } catch (error) {
+    console.error("Error when trying to delete user: ", error);
+    return {
+      message: "Database Error: Failed to Delete user."
+    }
+  }
+
+  await signOut();
 }

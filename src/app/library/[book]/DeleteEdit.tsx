@@ -98,7 +98,6 @@ export default function DeleteEdit({ bookData }: { bookData: bookType }) {
                   <button
                     className="text-red underline"
                     onClick={() => {
-                      console.log('trying to delete');
                       deleteBook(id);
                     }}>
                     Delete

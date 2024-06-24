@@ -3,6 +3,16 @@ import { auth } from "../../../auth";
 import userModel from "./models/userModel";
 import { bookType } from "../types";
 import { redirect } from "next/navigation";
+import crypto from 'crypto';
+
+/**
+ * 
+ * @param email string
+ * @returns string - hashed version of the email
+ */
+export function hashEmail(email: string) {
+  return crypto.createHash('sha256').update(email).digest('hex');
+}
 
 /**
  * Retrieves the user's information from the database.
@@ -19,11 +29,13 @@ export async function getUserInfo() {
   const session = await auth();
   if (!session) redirect('/login');
   if (!session.user) return null;
-  const userId = session.user.email;
+  if (typeof session.user.email !== 'string') return null;
+  // ensures user email is not exposed in case of a database breach
+  const userId = hashEmail(session.user.email);
   
 
   // Search the database for the user.
-  const data = await userModel.findOne({ authId: session.user.email }).exec();
+  const data = await userModel.findOne({ authId: userId }).exec();
 
   if (data) {
     return data;

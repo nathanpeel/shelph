@@ -1,18 +1,23 @@
 /**
  * Navbar component
  */
-import React, { ReactElement } from 'react'
-import Link from 'next/link'
-import Image from 'next/image'
-import { SignOut } from './SignOut';
-
+import React, { ReactElement } from "react";
+import Link from "next/link";
+import Image from "next/image";
+import { SignOut } from "./SignOut";
+import { auth } from "../../auth";
 
 /**
- * 
+ *
  * @param current the current tab/route being viewed
  * @returns JSX Element
  */
-export default function Navbar({current}: {current: string}): ReactElement {
+export default async function Navbar({ current }: { current: string }) {
+  const session = await auth();
+  let profileImage: string = "";
+  if (session && session.user && session.user.image) {
+    profileImage = session.user.image;
+  }
 
   return (
     <div className="flex justify-between items-center sm:p-3 relative mb-5 sm:mb-10">
@@ -25,7 +30,6 @@ export default function Navbar({current}: {current: string}): ReactElement {
         </p>
       </div>
       <div className="bg-sky text-white md:text-lg text-md flex lg:gap-36 md:gap-9 sm:gap-5 rounded-full sm:px-8 py-3 px-10 lg:mr-[65px] sm:mr-[28px]">
-
         {
           // conditionally renders the buttons based on the index and which button the user is currently on
           ["Home", "Your Library", "Settings"].map((el, index) => {
@@ -68,9 +72,15 @@ export default function Navbar({current}: {current: string}): ReactElement {
             );
           })
         }
-        
       </div>
-      <SignOut/>
+      <div className="flex items-center gap-2 invisible sm:visible">
+        <Image
+          src={profileImage}
+          alt="Profile image"
+          width={50}
+          height={50}></Image>
+        <SignOut />
+      </div>
     </div>
   );
 }

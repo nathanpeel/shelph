@@ -1,14 +1,37 @@
 "use server";
 
+/**
+ * Server-side action to handle form validation and database operation for mutating data.
+ * 
+ * @module action
+ */
+
 import dbConnect from "./dbConnect";
 import { z } from 'zod';
 import BookModel from "./models/bookModel";
 import UserData from "./models/userModel";
-import { auth } from "@clerk/nextjs";
 import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
+import { auth } from "../../../auth";
+import { hashEmail } from "./data";
+import { signOut } from "../../../auth";
 
-//this uses zod to create an expected data from the form
+/**
+ * Fetches userId
+ * 
+ */
+async function getUserId() {
+  const session = await auth();
+  if (!session) redirect('/login');
+  if (!session.user) return null;
+  if (typeof session.user.email !== 'string') return null;
+  return hashEmail(session.user.email); // hashes the email to compare to database
+}
+
+
+/**
+ * Defines the expected from data structure using Zod.
+ */
 const FormSchema = z.object({
   title: z.string().min(1), // REQUIRED
   author: z.string().min(1), // REQUIRED
@@ -20,10 +43,13 @@ const FormSchema = z.object({
   currentPageCount: z.coerce.number().optional(),
   categories: z.string().optional().array().optional(),
   series: z.string().optional(),
+  id: z.string().optional(),
 })
 
 
-//This is the validation state type
+/**
+ * Type definition for the validation state.
+ */
 export type State = {
   errors?: {
     title?: string[];
@@ -33,9 +59,18 @@ export type State = {
   message?: string | null;
 }
 
+/**
+ * Creates a new book entry in the database after validating the form data.
+ *
+ * @async
+ * @function createBook
+ * @param prevState The previous validation state.
+ * @param formData The form data to be validated and processed.
+ * @returns The result of the validation and database operation.
+ */
 export async function createBook(prevState: State, formData: FormData) {
 
-  //this validates the fields to ensure proper data types
+  // Validate the form fields to ensure proper data types.
   const validatedFields = FormSchema.safeParse({
     title: formData.get('title'),
     author: formData.get('author'),
@@ -48,13 +83,15 @@ export async function createBook(prevState: State, formData: FormData) {
     categories: formData.get('categories') || [],
     series: formData.get('series') || '',
   });
-  //checks if the form data is valid and sends errors to the form if it is not.
+
+  // Check if the form data is valid and return errors if it's not.
   if (!validatedFields.success) {
     return {
       errors: validatedFields.error.flatten().fieldErrors,
       message: 'Missing or incorrect fields. Failed to create book'
     }
   }
+
   const {
     title,
     author,
@@ -68,9 +105,9 @@ export async function createBook(prevState: State, formData: FormData) {
     series
   } = validatedFields.data;
 
-  const { userId: authId } = auth();
+  const authId = await getUserId();
 
-  //submit data to the database
+  // Submit data to the database.
   try {
     await dbConnect();
 
@@ -86,26 +123,236 @@ export async function createBook(prevState: State, formData: FormData) {
       series: series,
       categories: categories
     });
+
     const data = await UserData.findOne({ authId, });
 
-    if (!data) throw new Error('Could not find user when trying to add a book')
+    if (!data) throw new Error('Could not find user when trying to add a book');
 
-    const newBookList = [...data.booklist, book];
-    await UserData.findOneAndUpdate({ _id: data._id }, { booklist: newBookList })
+    const newBookList = [...data.bookList, book];
+    await UserData.findOneAndUpdate({ _id: data._id }, { bookList: newBookList })
   } catch (error) {
     return {
       message: "Database Error: Failed to Create Book"
     }
   }
+
+  // Revalidate the library path and redirect to it.
   revalidatePath('/library');
   redirect('/library');
-
 }
 
-//add a general update function
+/**
+ * Uses a form to allow the user to edit some properties of a specific book
+ * 
+ * @async
+ * @function editBook
+ * @param prevState 
+ * @param formData 
+ * @returns 
+ */
+export async function editBook(prevState: State, formData: FormData) {
 
-//add an update rating function
+  // Validate the form fields to ensure proper data types.
+  const validatedFields = FormSchema.safeParse({
+    title: formData.get('title'),
+    author: formData.get('author'),
+    startDate: formData.get('startDate'),
+    finishDate: formData.get('finishDate'),
+    image: formData.get('image') || '',
+    totalPageCount: formData.get('totalPageCount'),
+    categories: formData.get('categories') || [],
+    series: formData.get('series') || '',
+    id: formData.get('id')
+  });
 
-//add an update rating function
+  // Check if the form data is valid and return errors if it's not.
+  if (!validatedFields.success) {
+    return {
+      errors: validatedFields.error.flatten().fieldErrors,
+      message: 'Missing or incorrect fields. Failed to create book'
+    }
+  }
 
-//add a delete function
+  const {
+    title,
+    author, 
+    startDate, 
+    finishDate, 
+    image,
+    totalPageCount, 
+    categories, 
+    series,
+    id
+  } = validatedFields.data;
+
+  interface NewBookData {
+    title: string;
+    author: string;
+    startDate?: string;
+    finishDate?: string;
+    image?: string;
+    totalPageCount: number;
+    categories?: (string | undefined)[];
+    series?: string;
+  }
+
+  const newBookData = {
+    title, 
+    author, 
+    startDate,
+    image,
+    finishDate,
+    totalPageCount,
+    categories, 
+    series,
+  }
+
+  const authId = await getUserId();
+
+  // Submit data to the database.
+  try {
+    await dbConnect();
+
+    const data = await UserData.findOne({ authId, });
+
+    if (!data) throw new Error('Could not find user when trying to edit a book');
+    if (!id) throw new Error('Could not find book with id when trying to edit a book');
+    const book = data.bookList.id(id);
+
+    let isDifferent = false;
+    for (const key in newBookData) {
+      const newValue = newBookData[key as keyof NewBookData];
+      if (newBookData.hasOwnProperty(key) && book[key] !== newValue) {
+        isDifferent = true;
+        const bookProp = `bookList.$[element].${key}`;
+        await UserData.findOneAndUpdate({ _id: data._id }, { $set: { [bookProp]: newValue } }, { arrayFilters: [{ 'element._id': id }] });
+      }
+    }
+
+    if (isDifferent) {
+      revalidatePath(`/library/${id}`);
+      redirect(`/`); // for some reason it doesn't matter what path is entered here
+      // it reloads the active book page regardless
+    } else {
+      return {
+        message: 'No changes, book not updated',
+        errors: {}
+      };
+    }
+
+  } catch (error) {
+    return {
+      message: "Database Error: Failed to Edit Book"
+    }
+  }
+}
+
+/**
+ * Updates the rating for a specific book
+ * 
+ * @param newRating the new star rating
+ * @param id the id of the book
+ * @returns nothing or an error message
+ */
+export async function updateRating(newRating: number, id: string) {
+  const authId = await getUserId();
+  
+  try {
+    await dbConnect();
+
+    const data = await UserData.findOne({ authId, });
+    if (!data) throw new Error('Could not find user when trying to update a book rating');
+
+    await UserData.findOneAndUpdate({ _id: data._id }, { $set: { 'bookList.$[element].rating': newRating } }, { arrayFilters: [{ 'element._id': id }] })
+  } catch (error) {
+    return {
+      message: "Database Error: Failed to Update Rating."
+    }
+  }
+
+   // Revalidate the library path to reflect the change on the list
+  revalidatePath('/library');
+}
+
+/**
+ * Updates the reading progress
+ * 
+ * @async
+ * @function updateProgress
+ * @param newCount the new page count progress
+ * @param id the id of the book
+ * @return nothing or error message
+ */
+export async function updateProgress(newCount: number, id: string) {
+  const authId = await getUserId();
+  
+  try {
+    await dbConnect();
+
+    const data = await UserData.findOne({ authId, });
+    if (!data) throw new Error('Could not find user when trying to update a book rating');
+
+    await UserData.findOneAndUpdate({ _id: data._id }, { $set: { 'bookList.$[element].currentPageCount': newCount } }, { arrayFilters: [{ 'element._id': id }] })
+  } catch (error) {
+    return {
+      message: "Database Error: Failed to update reading progress."
+    }
+  }
+
+   // Revalidate the library path to reflect the change on the list
+  revalidatePath('/library/');
+  revalidatePath(`/library/${id}`);
+}
+
+/**
+ * Deleted a specific book
+ * 
+ * @async
+ * @function deleteBook
+ * @param id the id of the book to delete
+ * @return nothing or error message
+ */
+export async function deleteBook(id: string) {
+  const authId = await getUserId();
+  
+  try {
+    await dbConnect();
+
+    const data = await UserData.findOne({ authId, });
+    if (!data) throw new Error('Could not find user when trying to update a book rating');
+
+    await UserData.findOneAndUpdate({ _id: data._id }, { $pull: { bookList: { _id: id } } });
+  } catch (error) {
+    return {
+      message: "Database Error: Failed to update reading progress."
+    }
+  }
+
+   // Revalidate the library path to reflect the change on the list
+  revalidatePath('/library/');
+  redirect('/library');
+}
+
+/**
+ * Delete a user's account
+ * 
+ * @async
+ * @function deleteAccount
+ * @return nothing or error message
+ */
+export async function deleteAccount() {
+  const authId = await getUserId();
+
+  try {
+    await dbConnect();
+
+    await UserData.deleteOne({ authId, });
+  } catch (error) {
+    console.error("Error when trying to delete user: ", error);
+    return {
+      message: "Database Error: Failed to Delete user."
+    }
+  }
+
+  await signOut();
+}

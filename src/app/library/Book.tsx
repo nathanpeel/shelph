@@ -1,22 +1,27 @@
+/**
+ * Creates a book component to display in the book list
+ */
+
 import React from "react";
 import Image from "next/image";
 import Link from "next/link";
 import Stars from "@/app/library/Stars";
 import { bookType } from "../types";
 
-type props = {
-  id: string;
-  item: bookType
-}
 
-export default function Book ({ id, item }: props) {
-
-  const {rating, image, title, author, currentPageCount, totalPageCount} = item
+/**
+ * 
+ * @param id id of the book for creating the dynamic route link
+ * @param item the actually book data
+ * @returns 
+ */
+export default function Book({ id, item }: { id: string; item: bookType }) {
+  const { rating, image, title, author, currentPageCount, totalPageCount } =
+    item;
 
   return (
     <Link href={`/library/${id}`}>
-      <div
-        className="w-[90vw] h-[35vw] lg:w-[950px] lg:h-[370px] xl:w-[1150px] xl:h-[470px]">
+      <div className="w-[90vw] h-[35vw] lg:w-[950px] lg:h-[370px] xl:w-[1150px] xl:h-[470px]">
         <div className="flex w-[100%] h-[100%] gap-10">
           <div className="relative bg-gray w-[25%] h-[100%] rounded-xl">
             {image !== "" ? (
@@ -37,7 +42,7 @@ export default function Book ({ id, item }: props) {
             <div className="flex flex-col sm:gap-5 gap-1">
               <h2 className="text-2xl sm:text-4xl font-bold">{title}</h2>
               <p>by {author}</p>
-              <Stars number={rating}/>
+              <Stars number={rating} />
             </div>
             {`${Math.floor(
               (currentPageCount / totalPageCount) * 100

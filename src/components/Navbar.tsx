@@ -1,12 +1,23 @@
-import React, { ReactElement } from 'react'
-import Link from 'next/link'
-import Image from 'next/image'
+/**
+ * Navbar component
+ */
+import React, { ReactElement } from "react";
+import Link from "next/link";
+import Image from "next/image";
+import { SignOut } from "./SignOut";
+import { auth } from "../../auth";
 
-type props = {
-  current: string
-}
-
-export default function Navbar({current}: props): ReactElement {
+/**
+ *
+ * @param current the current tab/route being viewed
+ * @returns JSX Element
+ */
+export default async function Navbar({ current }: { current: string }) {
+  const session = await auth();
+  let profileImage: string = "";
+  if (session && session.user && session.user.image) {
+    profileImage = session.user.image;
+  }
 
   return (
     <div className="flex justify-between items-center sm:p-3 relative mb-5 sm:mb-10">
@@ -19,9 +30,8 @@ export default function Navbar({current}: props): ReactElement {
         </p>
       </div>
       <div className="bg-sky text-white md:text-lg text-md flex lg:gap-36 md:gap-9 sm:gap-5 rounded-full sm:px-8 py-3 px-10 lg:mr-[65px] sm:mr-[28px]">
-
         {
-          //conditionally renders the buttons based on the index and which button the user is currenlty on
+          // conditionally renders the buttons based on the index and which button the user is currently on
           ["Home", "Your Library", "Settings"].map((el, index) => {
             let folder = "";
             let icon = "";
@@ -37,10 +47,10 @@ export default function Navbar({current}: props): ReactElement {
               icon = "/settings.svg";
             }
 
-            //the class that all the button share
+            // the styling class that all the button share
             let classFrame =
               "flex items-center md:gap-3 gap-1 sm:border-b-2 sm:p-1 px-7";
-            //adds styles based on whether the button is the current page or not
+            // adds styles based on whether the button is the current page or not
             let className =
               el === current
                 ? (classFrame += " opacity-60")
@@ -62,11 +72,15 @@ export default function Navbar({current}: props): ReactElement {
             );
           })
         }
-        
       </div>
-      <Link className="self-start" href="/login">
-        <p className="self-start sm:visible sm:w-full collapse w-0">Logout</p>
-      </Link>
+      <div className="flex items-center gap-2 invisible sm:visible">
+        <Image
+          src={profileImage}
+          alt="Profile image"
+          width={50}
+          height={50}></Image>
+        <SignOut />
+      </div>
     </div>
   );
 }

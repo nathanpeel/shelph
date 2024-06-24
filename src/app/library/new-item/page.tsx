@@ -1,19 +1,35 @@
 "use client";
 
+/**
+ * Route for form to add a new book
+ */
+
 import { useState } from "react";
 import { useFormState } from "react-dom";
 import { createBook } from "@/app/lib/actions";
 import Link from "next/link";
 import Image from "next/image";
 
+/**
+ * 
+ * @returns JSX Element
+ */
 export default function Page() {
   const initialState = { message: null, errors: {} };
+  // uses server action to add book when form is submitted
   const [state, dispatch] = useFormState(createBook, initialState);
 
+  // determines if the image field is a imageUrl or a file
   const [useImageUrl, setUseImageUrl] = useState(false);
   const [rating, setRating] = useState(0);
   const starsArray = [];
 
+  /**
+   * Updates the stars and form data
+   * 
+   * @function handleClickStars
+   * @param number the rating and number of filled in stars
+   */
   function handleClickStars(number: number) {
     setRating(number);
     const ratingInput = document.getElementById("rating") as HTMLInputElement;
@@ -22,6 +38,7 @@ export default function Page() {
     }
   }
 
+  // Creates initial star state 
   for (let i = 0; i < 5; i++) {
     starsArray.push(
       <div
@@ -45,7 +62,7 @@ export default function Page() {
       <h1 className="text-3xl text-center">Enter the Book Details</h1>
       <p>
         Required fields are indicate by{" "}
-        <span className="text-red-500">*</span>
+        <span className="text-red">*</span>
       </p>
       <form
         action={dispatch}
@@ -55,7 +72,7 @@ export default function Page() {
         {/* TITLE */}
         <div className="my-8">
           <label className="text-lg" htmlFor="title">
-            Book Title <span className="text-red-500">*</span>
+            Book Title <span className="text-red">*</span>
           </label>
           <input
             type="text"
@@ -66,7 +83,7 @@ export default function Page() {
           />
           <div id="title-error" aria-live="polite" aria-atomic>
             {state.errors?.title && (
-              <p className="mt-2 text-sm text-red-500">Please enter a title</p>
+              <p className="mt-2 text-sm text-red">Please enter a title</p>
             )}
           </div>
         </div>
@@ -75,7 +92,7 @@ export default function Page() {
         {/* AUTHOR */}
         <div className="my-8">
           <label className="text-lg" htmlFor="author">
-            Author <span className="text-red-500">*</span>
+            Author <span className="text-red">*</span>
           </label>
           <input
             type="text"
@@ -86,7 +103,7 @@ export default function Page() {
           />
           <div id="author-error" aria-live="polite" aria-atomic>
             {state.errors?.author && (
-              <p className="mt-2 text-sm text-red-500">
+              <p className="mt-2 text-sm text-red">
                 Please enter an author
               </p>
             )}
@@ -138,7 +155,14 @@ export default function Page() {
               <input type="text" id="image" name="image" hidden />
               <input
                 type="file"
-                onChange={(e) => {
+                  onChange={(e) => {
+                  /**
+                   * Finds the file type of the inputted file
+                   * example: .png, .jpeg. etc
+                   * 
+                   * @param fileName name of the image file
+                   * @returns the file type
+                   */
                   function getFileExtension(fileName: string): string {
                     if (!fileName) return "";
 
@@ -148,7 +172,7 @@ export default function Page() {
                     return "";
                   }
 
-                  //this converts an image into a DataURL to store in the database
+                  // converts an image into a DataURL to store in the database
                   const input = e.target;
                   if (input.files) {
                     if (input.files.length > 0) {
@@ -187,6 +211,7 @@ export default function Page() {
 
                     reader.onload = function (e) {
                       if (e.target) {
+                        // sets the form data to the image URL
                         const dataUrl = e.target.result;
                         if (dataUrl) {
                           const newImage = dataUrl.toString();
@@ -250,7 +275,7 @@ export default function Page() {
         <div className="my-8">
           <label className="text-lg" htmlFor="totalPageCount">
             Enter the book&apos;s total page count{" "}
-            <span className="text-red-500">*</span>
+            <span className="text-red">*</span>
           </label>
           <input
             type="number"
@@ -262,7 +287,7 @@ export default function Page() {
           />
           <div id="pageCount-error" aria-live="polite" aria-atomic>
             {state.errors?.totalPageCount && (
-              <p className="mt-2 text-sm text-red-500">
+              <p className="mt-2 text-sm text-red">
                 Please enter a total page count
               </p>
             )}

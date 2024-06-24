@@ -1,9 +1,12 @@
 import mongoose from "mongoose";
 import { bookSchema, BookType } from "./bookModel";
 
+/**
+ * Defines user interface
+ */
 export interface UserType extends mongoose.Document {
   authId: string,
-  booklist: BookType[],
+  bookList: BookType[],
   categories: string[],
   series: string[],
   stats: {
@@ -13,10 +16,12 @@ export interface UserType extends mongoose.Document {
   }
 }
 
-//Change to bookList with capital L
+/**
+ * Creates user schema
+ */
 const userDataSchema = new mongoose.Schema<UserType>({
   authId: String,
-  booklist: [bookSchema],
+  bookList: [bookSchema],
   categories: [String],
   series: [String],
   stats: {

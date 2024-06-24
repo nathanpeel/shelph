@@ -1,3 +1,7 @@
+/**
+ * The main layout for the web applicaiton
+ */
+
 import "./globals.css";
 import type { Metadata } from "next";
 import { Lato } from "next/font/google";
@@ -13,6 +17,12 @@ export const metadata: Metadata = {
   description: "Reading list management app",
 };
 
+/**
+ * Wraps around the whole application
+ * 
+ * @param children child components
+ * @returns JSX Element
+ */
 export default function RootLayout({
   children,
 }: {

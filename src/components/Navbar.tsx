@@ -20,16 +20,16 @@ export default async function Navbar({ current }: { current: string }) {
   }
 
   return (
-    <div className="flex justify-between items-center sm:p-3 relative mb-5 sm:mb-10">
-      <div>
-        <h1 className="md:text-5xl text-3xl text-green font-bold sm:visible sm:w-full collapse w-0">
+    <div className="flex md:justify-between justify-center items-center sm:p-3 relative mb-5 sm:mb-10 mt-2">
+      <div className="hidden md:block">
+        <h1 className="text-4xl text-green font-bold sm:visible sm:w-full collapse w-0">
           Shelph
         </h1>
         <p className="text-sm sm:visible sm:w-full collapse w-0">
           Grow your mind
         </p>
       </div>
-      <div className="bg-sky text-white md:text-lg text-md flex lg:gap-36 md:gap-9 sm:gap-5 rounded-full sm:px-8 py-3 px-10 lg:mr-[65px] sm:mr-[28px]">
+      <div className="bg-sky text-white md:text-lg text-md flex lg:gap-28 sm:gap-9 rounded-full sm:px-8 py-3 px-10">
         {
           // conditionally renders the buttons based on the index and which button the user is currently on
           ["Home", "Your Library", "Settings"].map((el, index) => {
@@ -73,7 +73,7 @@ export default async function Navbar({ current }: { current: string }) {
           })
         }
       </div>
-      <div className="flex items-center gap-2 invisible sm:visible">
+      <div className="md:flex items-center gap-2 hidden">
         <Image
           src={profileImage}
           alt="Profile image"

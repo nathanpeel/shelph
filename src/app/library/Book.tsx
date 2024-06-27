@@ -8,12 +8,11 @@ import Link from "next/link";
 import Stars from "@/app/library/Stars";
 import { bookType } from "../types";
 
-
 /**
- * 
+ *
  * @param id id of the book for creating the dynamic route link
  * @param item the actually book data
- * @returns 
+ * @returns
  */
 export default function Book({ id, item }: { id: string; item: bookType }) {
   const { rating, image, title, author, currentPageCount, totalPageCount } =
@@ -22,7 +21,7 @@ export default function Book({ id, item }: { id: string; item: bookType }) {
   return (
     <Link href={`/library/${id}`}>
       <div className="w-[90vw] h-[35vw] lg:w-[950px] lg:h-[370px] xl:w-[1150px] xl:h-[470px]">
-        <div className="flex w-[100%] h-[100%] gap-10">
+        <div className="flex w-[100%] h-[100%] sm:gap-10 gap-5">
           <div className="relative bg-gray w-[25%] h-[100%] rounded-xl">
             {image !== "" ? (
               <Image
@@ -54,4 +53,4 @@ export default function Book({ id, item }: { id: string; item: bookType }) {
       </div>
     </Link>
   );
-};
+}

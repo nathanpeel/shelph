@@ -31,7 +31,7 @@ export default async function Page({ params }: { params: { book: string } }) {
       <main className="flex flex-col gap-10 sm:px-20 px-5">
         <div className="mt-20">
           <div className="flex flex-col items-center">
-            <h1 className="sm:text-7xl text-3xl text-green mb-3 font-extrabold">
+            <h1 className="md:text-7xl sm:text-4xl text-3xl text-green mb-3 font-extrabold text-center">
               {title}
             </h1>
             <p>by {author}</p>

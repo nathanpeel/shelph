@@ -8,10 +8,10 @@ export default function AccountSettings() {
   const [confirmText, setConfirmText] = useState("");
 
   return (
-    <div className="flex flex-col items-center gap-5">
+    <div className="flex flex-col items-center gap-5 px-2">
       <h2 className="text-2xl">Account Settings</h2>
-      <div className="rounded-full h-1 w-[500px] bg-black"></div>
-      <div className="flex gap-10 items-center">
+      <div className="rounded-full h-1 sm:w-[500px] w-[300px] bg-black"></div>
+      <div className="flex sm:gap-10 gap-4 items-center">
         <button
           className="bg-red text-white text-center px-6 font-bold rounded-full py-2"
           onClick={() => {

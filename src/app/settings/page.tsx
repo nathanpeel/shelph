@@ -8,6 +8,7 @@ import { getUserInfo } from "../lib/data";
 import AccountSettings from "./AccountSettings";
 import { auth } from "../../../auth";
 import Image from "next/image";
+import { SignOut } from "@/components/SignOut";
 
 /**
  *
@@ -26,7 +27,7 @@ export default async function Page() {
   }
 
   return (
-    <div className="bg-white h-[100vh] text-black flex flex-col gap-10">
+    <div className="bg-white h-[100vh] text-black flex flex-col gap-10 min-h-fit pb-10">
       <Navbar current="Settings" />
       <div className="flex flex-col items-center mb-10 gap-2">
         <Image
@@ -35,6 +36,7 @@ export default async function Page() {
           width={100}
           height={100}></Image>
         <p className="text-4xl font-bold">{profileName}</p>
+        <SignOut/>
       </div>
       <div className="flex flex-col items-center">
         <AccountSettings />

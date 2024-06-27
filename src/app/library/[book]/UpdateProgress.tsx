@@ -44,7 +44,7 @@ export default function UpdateProgress({
       <h2 className="text-sky text-2xl font-semibold mb-3">
         Update Reading Progress
       </h2>
-      <div className="flex gap-10 justify-between rounded-full shadow-lg py-3 px-7 border-2 border-gray items-center">
+      <div className="flex flex-col md:flex-row md:gap-10 gap-5 justify-between md:rounded-full rounded-xl shadow-lg py-3 px-7 border-2 border-gray items-center">
         <div className="flex gap-2 items-center">
           <p>Current Page</p>
           <p className="bg-gradient-to-br from-pink to-orange bg-clip-text text-transparent text-2xl font-bold">

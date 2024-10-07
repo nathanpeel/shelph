@@ -229,6 +229,50 @@ export async function editBook(prevState: State, formData: FormData) {
       }
     }
 
+//     // Check if any field in newBookData is different from the existing book data
+// isDifferent = Object.keys(newBookData).some(key => {
+//     // For arrays like 'categories', we need to compare them differently
+//     if (Array.isArray(book[key]) && Array.isArray(newBookData[key])) {
+//         return JSON.stringify(book[key]) !== JSON.stringify(newBookData[key]);
+//     }
+//     // For optional dates, make sure we're comparing valid dates or both are undefined
+//     if ((key === 'startDate' || key === 'finishDate') && (book[key] || newBookData[key])) {
+//         return new Date(book[key] || '').toString() !== new Date(newBookData[key] || '').toString();
+//     }
+//     // General case for other fields
+//     return book[key] !== newBookData[key];
+// });
+
+// if (isDifferent) {
+//     try {
+//         // Update the book in the database if there are differences
+//         const result = await UserData.findOneAndUpdate(
+//             { 'bookList._id': id }, // Find the specific book in the bookList
+//             { $set: {
+//                 'bookList.$.title': newBookData.title,
+//                 'bookList.$.author': newBookData.author,
+//                 'bookList.$.startDate': newBookData.startDate,
+//                 'bookList.$.finishDate': newBookData.finishDate,
+//                 'bookList.$.image': newBookData.image,
+//                 'bookList.$.totalPageCount': newBookData.totalPageCount,
+//                 'bookList.$.categories': newBookData.categories,
+//                 'bookList.$.series': newBookData.series
+//             }},
+//             { new: true } // This option returns the updated document
+//         );
+
+//         if (!result) {
+//             throw new Error('Failed to find and update the book');
+//         }
+//         // result now contains the updated document, if needed for further actions
+
+//     } catch (error) {
+//         // Handle any errors that occur during the database update
+//         console.error('An error occurred while updating the book:', error);
+//         // Here you would typically throw or handle the error according to your application's error handling strategy
+//     }
+// }
+
     if (isDifferent) {
       revalidatePath(`/library/${id}`);
       redirect(`/`); // for some reason it doesn't matter what path is entered here
